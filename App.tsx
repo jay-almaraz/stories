@@ -1,21 +1,62 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import React, { ReactElement } from 'react';
+import 'react-native-gesture-handler';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import { HomeScreen } from './components/HomeScreen';
+import { OtherScreen } from './components/OtherScreen';
+import { DrawerContent } from './components/navigation/DrawerContent';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const theme = {
+  ...DefaultTheme,
+  roundness: 5,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#fa974d',
+    primaryTransparent: '#fa974d33',
+    primaryText: '#404040',
+    text: '#404040',
   },
-});
+};
+
+export type RootNavigatorRoutes = {
+  home: undefined;
+  other: { msg: string };
+};
+const Drawer = createDrawerNavigator<RootNavigatorRoutes>();
+
+export const App: React.FC = (): ReactElement => {
+  return (
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
+        <Drawer.Navigator
+          initialRouteName='home'
+          drawerContent={(props) => <DrawerContent {...props} />}
+          drawerContentOptions={{
+            activeBackgroundColor: theme.colors.primaryTransparent,
+            activeTintColor: theme.colors.primaryText,
+            inactiveTintColor: theme.colors.primaryText,
+            labelStyle: {
+              fontSize: 20,
+              fontWeight: 'bold',
+            },
+          }}
+        >
+          <Drawer.Screen
+            name='home'
+            component={HomeScreen}
+            options={{ title: 'Home', drawerIcon: () => <Icon name='home' size={24} /> }}
+          />
+          <Drawer.Screen
+            name='other'
+            component={OtherScreen}
+            options={{ title: 'Other' }}
+            initialParams={{ msg: 'OKAY I GUESS' }}
+          />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
+  );
+};
