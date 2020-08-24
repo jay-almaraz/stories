@@ -5,9 +5,10 @@ import 'react-native-gesture-handler';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { HomeScreen } from './components/HomeScreen';
-import { OtherScreen } from './components/OtherScreen';
 import { DrawerContent } from './components/navigation/DrawerContent';
+import { HomeScreen } from './components/screens/HomeScreen';
+import { OtherScreen } from './components/screens/OtherScreen';
+import { RecordScreen } from './components/screens/RecordScreen';
 
 const theme = {
   ...DefaultTheme,
@@ -24,6 +25,7 @@ const theme = {
 export type RootNavigatorRoutes = {
   home: undefined;
   other: { msg: string };
+  record: undefined;
 };
 const Drawer = createDrawerNavigator<RootNavigatorRoutes>();
 
@@ -55,6 +57,7 @@ export const App: React.FC = (): ReactElement => {
             options={{ title: 'Other' }}
             initialParams={{ msg: 'OKAY I GUESS' }}
           />
+          <Drawer.Screen name='record' component={RecordScreen} options={{ title: 'Record' }} />
         </Drawer.Navigator>
       </NavigationContainer>
     </PaperProvider>

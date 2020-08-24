@@ -2,8 +2,8 @@ import { DrawerScreenProps } from '@react-navigation/drawer';
 import React, { ReactElement } from 'react';
 import { Button, Text } from 'react-native-paper';
 
-import { RootNavigatorRoutes } from '../App';
-import { Screen } from './core/Screen';
+import { RootNavigatorRoutes } from '../../App';
+import { Screen } from '../core/Screen';
 
 type OtherScreenProps = DrawerScreenProps<RootNavigatorRoutes, 'other'>;
 export const OtherScreen: React.FC<OtherScreenProps> = (props): ReactElement => {
