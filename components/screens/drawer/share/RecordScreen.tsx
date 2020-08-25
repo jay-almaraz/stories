@@ -1,22 +1,23 @@
 import Slider from '@react-native-community/slider';
-import { DrawerScreenProps } from '@react-navigation/drawer';
+import { StackScreenProps } from '@react-navigation/stack';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { FileInfo } from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import { FileSystem } from 'react-native-unimodules';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { RootNavigatorRoutes } from '../../App';
-import { Screen } from '../core/Screen';
+import { BottomButtons } from '../../../core/BottomButtons';
+import { Screen } from '../../../core/Screen';
+import { ShareStackRoutes } from './ShareMain';
 
 const RECORDING_SETTINGS = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY;
 
 const { width: DEVICE_WIDTH } = Dimensions.get('window');
 
-type RecordScreenProps = DrawerScreenProps<RootNavigatorRoutes, 'record'>;
+type RecordScreenProps = StackScreenProps<ShareStackRoutes, 'record'>;
 export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement => {
   const { navigation } = props;
 
@@ -296,7 +297,7 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
   }
 
   return (
-    <Screen title='Record' drawerHelpers={navigation}>
+    <Screen title='Record' drawerHelpers={navigation.dangerouslyGetParent()}>
       <View style={styles.container}>
         <View style={styles.topContainer}>
           {sound ? (
@@ -339,24 +340,22 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
           {isRecording ? <Text>{recordingTimestamp}</Text> : null}
         </View>
         <View style={styles.bottomContainer}>
-          <Button
-            disabled={!sound}
-            onPress={onDiscardPressed}
-            mode='outlined'
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-          >
-            DISCARD
-          </Button>
-          <Button
-            disabled={!fileInfo}
-            onPress={onSharePressed}
-            mode='contained'
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-          >
-            SHARE
-          </Button>
+          <BottomButtons
+            buttons={[
+              {
+                disabled: !sound,
+                onPress: onDiscardPressed,
+                mode: 'outlined',
+                label: 'DISCARD',
+              },
+              {
+                disabled: !fileInfo,
+                onPress: onSharePressed,
+                mode: 'contained',
+                label: 'SHARE',
+              },
+            ]}
+          />
         </View>
       </View>
     </Screen>
@@ -407,17 +406,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
     flexGrow: 1,
-    width: '100%',
-  },
-  button: {
-    width: '40%',
-  },
-  buttonLabel: {
-    fontSize: 20,
   },
   playbackContainer: {
     flex: 1,

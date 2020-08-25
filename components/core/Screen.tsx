@@ -3,13 +3,13 @@ import React, { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
-import { RootNavigatorRoutes } from '../../App';
+import { DrawerRoutes } from '../navigation/DrawerMain';
 
 interface ScreenProps {
   onGoBack?: () => void;
   title: string;
   subtitle?: string;
-  drawerHelpers: DrawerActionHelpers<RootNavigatorRoutes>;
+  drawerHelpers: DrawerActionHelpers<DrawerRoutes>;
 }
 export const Screen: React.FC<ScreenProps> = (props): ReactElement => {
   const { onGoBack, title, subtitle, drawerHelpers, children } = props;

@@ -1,13 +1,11 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';
 import 'react-native-gesture-handler';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { DrawerContent } from './components/navigation/DrawerContent';
-import { HomeScreen } from './components/screens/HomeScreen';
-import { RecordScreen } from './components/screens/RecordScreen';
+import { DrawerMain } from './components/navigation/DrawerMain';
+import { SignInScreen } from './components/screens/SignIn';
 
 const theme = {
   ...DefaultTheme,
@@ -15,49 +13,28 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#fa974d',
-    primaryTransparent: '#fa974d33',
-    primaryText: '#404040',
     text: '#404040',
   },
 };
 
-export type RootNavigatorRoutes = {
-  home: undefined;
-  record: undefined;
+export type RootStackRoutes = {
+  signIn: undefined;
+  drawer: {
+    cityName: string;
+    shiftName: string;
+  };
 };
-const Drawer = createDrawerNavigator<RootNavigatorRoutes>();
+
+const Stack = createStackNavigator<RootStackRoutes>();
 
 export const App: React.FC = (): ReactElement => {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName='record'
-          drawerContent={(props) => <DrawerContent {...props} />}
-          drawerContentOptions={{
-            activeBackgroundColor: theme.colors.primaryTransparent,
-            activeTintColor: theme.colors.primaryText,
-            inactiveTintColor: theme.colors.primaryText,
-            labelStyle: {
-              fontSize: 20,
-              fontWeight: 'bold',
-            },
-          }}
-        >
-          <Drawer.Screen
-            name='home'
-            component={HomeScreen}
-            options={{ title: 'Home', drawerIcon: () => <Icon name='home' size={24} /> }}
-          />
-          <Drawer.Screen
-            name='record'
-            component={RecordScreen}
-            options={{
-              title: 'Record',
-              drawerIcon: () => <Icon name='microphone' size={24} />,
-            }}
-          />
-        </Drawer.Navigator>
+        <Stack.Navigator initialRouteName='signIn'>
+          <Stack.Screen name='signIn' component={SignInScreen} options={{ title: 'Sign In' }} />
+          <Stack.Screen name='drawer' component={DrawerMain} options={{ headerShown: false }} />
+        </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );
