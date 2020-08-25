@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { DrawerContent } from './components/navigation/DrawerContent';
 import { HomeScreen } from './components/screens/HomeScreen';
-import { OtherScreen } from './components/screens/OtherScreen';
 import { RecordScreen } from './components/screens/RecordScreen';
 
 const theme = {
@@ -24,7 +23,6 @@ const theme = {
 
 export type RootNavigatorRoutes = {
   home: undefined;
-  other: { msg: string };
   record: undefined;
 };
 const Drawer = createDrawerNavigator<RootNavigatorRoutes>();
@@ -34,7 +32,7 @@ export const App: React.FC = (): ReactElement => {
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName='home'
+          initialRouteName='record'
           drawerContent={(props) => <DrawerContent {...props} />}
           drawerContentOptions={{
             activeBackgroundColor: theme.colors.primaryTransparent,
@@ -52,12 +50,13 @@ export const App: React.FC = (): ReactElement => {
             options={{ title: 'Home', drawerIcon: () => <Icon name='home' size={24} /> }}
           />
           <Drawer.Screen
-            name='other'
-            component={OtherScreen}
-            options={{ title: 'Other' }}
-            initialParams={{ msg: 'OKAY I GUESS' }}
+            name='record'
+            component={RecordScreen}
+            options={{
+              title: 'Record',
+              drawerIcon: () => <Icon name='microphone' size={24} />,
+            }}
           />
-          <Drawer.Screen name='record' component={RecordScreen} options={{ title: 'Record' }} />
         </Drawer.Navigator>
       </NavigationContainer>
     </PaperProvider>

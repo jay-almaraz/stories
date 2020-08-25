@@ -1,6 +1,6 @@
 import { DrawerActionHelpers } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
 import { RootNavigatorRoutes } from '../../App';
@@ -15,7 +15,7 @@ export const Screen: React.FC<ScreenProps> = (props): ReactElement => {
   const { onGoBack, title, subtitle, drawerHelpers, children } = props;
 
   return (
-    <View>
+    <View style={styles.mainView}>
       <Appbar.Header>
         <Appbar.Action icon='menu' onPress={() => drawerHelpers.openDrawer()} />
         {onGoBack ? <Appbar.BackAction onPress={onGoBack} /> : null}
@@ -25,3 +25,10 @@ export const Screen: React.FC<ScreenProps> = (props): ReactElement => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  mainView: {
+    height: '100%',
+    width: '100%',
+  },
+});

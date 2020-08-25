@@ -1,29 +1,27 @@
 import Slider from '@react-native-community/slider';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { Audio, AVPlaybackStatus } from 'expo-av';
-import Font, { FontSource } from 'expo-font';
+import { FileInfo } from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { FileSystem } from 'react-native-unimodules';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { RootNavigatorRoutes } from '../../App';
-import * as Icons from '../assets/Icons';
 import { Screen } from '../core/Screen';
 
 const RECORDING_SETTINGS = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY;
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
-const BACKGROUND_COLOR = '#FFF8ED';
-const LIVE_COLOR = '#FF0000';
-const DISABLED_OPACITY = 0.5;
-const RATE_SCALE = 3.0;
+const { width: DEVICE_WIDTH } = Dimensions.get('window');
 
 type RecordScreenProps = DrawerScreenProps<RootNavigatorRoutes, 'record'>;
 export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement => {
   const { navigation } = props;
 
-  const [fontLoaded, setFontLoaded] = useState(true);
+  const theme = useTheme();
+
   const [hasPermissions, setHasPermissions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaybackAllowed, setIsPlaybackAllowed] = useState(false);
@@ -43,14 +41,12 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
   const [isSeeking, setIsSeeking] = useState(false);
   const [shouldPlayAtEndOfSeek, setShouldPlayAtEndOfSeek] = useState(false);
 
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
+
   useEffect(() => {
     Permissions.askAsync(Permissions.AUDIO_RECORDING)
       .then((res) => setHasPermissions(res.granted))
-      .catch((e) => console.log('Unable to ask for permissions', e));
-
-    // Font.loadAsync({
-    //   'sans-serif': require('../../assets/fonts/CutiveMono-Regular.ttf') as FontSource,
-    // }).then(() => setFontLoaded(true));
+      .catch((e) => console.error('Unable to ask for permissions', e));
   }, []);
 
   const updateScreenForSoundStatus = useCallback(
@@ -73,7 +69,7 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
       setIsPlaybackAllowed(false);
 
       if (status.error) {
-        console.log(`FATAL PLAYER ERROR: ${status.error}`);
+        console.error(`FATAL PLAYER ERROR: ${status.error}`);
       }
     },
     [
@@ -96,12 +92,13 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
 
     try {
       await recording.stopAndUnloadAsync();
+      setRecording(null);
     } catch (e) {
-      // Do nothing
+      console.error('Unable to unload recording', e);
     }
 
     const info = await FileSystem.getInfoAsync(recording.getURI() || '');
-    console.log(`FILE INFO: ${JSON.stringify(info)}`);
+    setFileInfo(info);
 
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
@@ -155,6 +152,10 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
       await sound.unloadAsync();
       sound.setOnPlaybackStatusUpdate(null);
       setSound(null);
+      setSoundDuration(null);
+      setSoundPosition(null);
+      setIsPlaybackAllowed(false);
+      setFileInfo(null);
     }
 
     await Audio.setAudioModeAsync({
@@ -202,44 +203,21 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
     sound.playAsync();
   }, [sound, isPlaying]);
 
-  const onStopPressed = useCallback(() => {
-    if (sound) sound.stopAsync();
-  }, [sound]);
+  const onDiscardPressed = useCallback(async () => {
+    if (sound) {
+      await sound.unloadAsync();
+    }
+    setSound(null);
+    setSoundDuration(null);
+    setSoundPosition(null);
+    setIsPlaybackAllowed(false);
+    setFileInfo(null);
+  }, [sound, setSound]);
 
-  const onMutePressed = useCallback(() => {
-    if (sound) sound.setIsMutedAsync(isMuted);
-  }, [sound, isMuted]);
-
-  const onVolumeSliderValueChange = useCallback(
-    (value: number) => {
-      if (sound) sound.setVolumeAsync(value);
-    },
-    [sound]
-  );
-
-  const trySetRate = useCallback(
-    async (rate: number, shouldCorrectPitch: boolean) => {
-      if (!sound) return;
-
-      try {
-        await sound.setRateAsync(rate, shouldCorrectPitch);
-      } catch (error) {
-        // Can't change rate
-      }
-    },
-    [sound]
-  );
-
-  const onRateSliderSlidingComplete = useCallback(
-    (value: number) => {
-      trySetRate(value * RATE_SCALE, shouldCorrectPitch);
-    },
-    [trySetRate, shouldCorrectPitch]
-  );
-
-  const onPitchCorrectionPressed = useCallback(() => {
-    trySetRate(rate, !shouldCorrectPitch);
-  }, [trySetRate, rate, shouldCorrectPitch]);
+  const onSharePressed = useCallback(() => {
+    if (!fileInfo) return;
+    console.log('sharing file', fileInfo);
+  }, [fileInfo]);
 
   const onSeekSliderValueChanged = useCallback(() => {
     if (!sound || isSeeking) return;
@@ -305,10 +283,6 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
     return getMMSSFromMillis(0);
   }, [recordingDuration, getMMSSFromMillis]);
 
-  if (!fontLoaded) {
-    return <View style={styles.emptyContainer} />;
-  }
-
   if (!hasPermissions) {
     return (
       <View style={styles.container}>
@@ -324,121 +298,65 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
   return (
     <Screen title='Record' drawerHelpers={navigation}>
       <View style={styles.container}>
-        <View
-          style={[
-            styles.halfScreenContainer,
-            {
-              opacity: isLoading ? DISABLED_OPACITY : 1.0,
-            },
-          ]}
-        >
-          <View />
-          <View style={styles.recordingContainer}>
-            <View />
-            <TouchableHighlight
-              underlayColor={BACKGROUND_COLOR}
-              style={styles.wrapper}
-              onPress={onRecordPressed}
-              disabled={isLoading}
-            >
-              <Image style={styles.image} source={Icons.RECORD_BUTTON.module} />
-            </TouchableHighlight>
-            <View style={styles.recordingDataContainer}>
-              <View />
-              <Text style={[styles.liveText, { fontFamily: 'sans-serif' }]}>{isRecording ? 'LIVE' : ''}</Text>
-              <View style={styles.recordingDataRowContainer}>
-                <Image style={[styles.image, { opacity: isRecording ? 1.0 : 0.0 }]} source={Icons.RECORDING.module} />
-                <Text style={[styles.recordingTimestamp, { fontFamily: 'sans-serif' }]}>{recordingTimestamp}</Text>
-              </View>
-              <View />
-            </View>
-            <View />
-          </View>
-          <View />
-        </View>
-        <View
-          style={[
-            styles.halfScreenContainer,
-            {
-              opacity: !isPlaybackAllowed || isLoading ? DISABLED_OPACITY : 1.0,
-            },
-          ]}
-        >
-          <View />
-          <View style={styles.playbackContainer}>
-            <Slider
-              style={styles.playbackSlider}
-              trackImage={Icons.TRACK_1.module}
-              thumbImage={Icons.THUMB_1.module}
-              value={seekSliderPosition}
-              onValueChange={onSeekSliderValueChanged}
-              onSlidingComplete={onSeekSliderSlidingComplete}
-              disabled={!isPlaybackAllowed || isLoading}
-            />
-            <Text style={[styles.playbackTimestamp, { fontFamily: 'sans-serif' }]}>{playbackTimestamp}</Text>
-          </View>
-          <View style={[styles.buttonsContainerBase, styles.buttonsContainerTopRow]}>
-            <View style={styles.volumeContainer}>
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={onMutePressed}
-                disabled={!isPlaybackAllowed || isLoading}
-              >
-                <Image
-                  style={styles.image}
-                  source={isMuted ? Icons.MUTED_BUTTON.module : Icons.UNMUTED_BUTTON.module}
+        <View style={styles.topContainer}>
+          {sound ? (
+            <>
+              <Text style={styles.topText}>Review Your Story</Text>
+              <View style={styles.playbackContainer}>
+                <Slider
+                  style={styles.playbackSlider}
+                  value={seekSliderPosition}
+                  onValueChange={onSeekSliderValueChanged}
+                  onSlidingComplete={onSeekSliderSlidingComplete}
+                  thumbTintColor={theme.colors.primary}
+                  minimumTrackTintColor={theme.colors.primary}
+                  maximumTrackTintColor={theme.colors.primary}
+                  disabled={!isPlaybackAllowed || isLoading}
                 />
-              </TouchableHighlight>
-              <Slider
-                style={styles.volumeSlider}
-                trackImage={Icons.TRACK_1.module}
-                thumbImage={Icons.THUMB_2.module}
-                value={1}
-                onValueChange={onVolumeSliderValueChange}
-                disabled={!isPlaybackAllowed || isLoading}
-              />
-            </View>
-            <View style={styles.playStopContainer}>
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
+                <Text style={[styles.playbackTimestamp, { fontFamily: 'sans-serif' }]}>{playbackTimestamp}</Text>
+              </View>
+            </>
+          ) : (
+            <Text style={styles.topText}>Share Your Story</Text>
+          )}
+        </View>
+        <View style={styles.middleContainer}>
+          <View style={{ ...styles.iconContainer, borderColor: theme.colors.primary }}>
+            {sound ? (
+              <Icon
+                style={{ ...styles.roundIcon, color: theme.colors.primary }}
+                name={isPlaying ? 'stop' : 'play'}
                 onPress={onPlayPausePressed}
-                disabled={!isPlaybackAllowed || isLoading}
-              >
-                <Image style={styles.image} source={isPlaying ? Icons.PAUSE_BUTTON.module : Icons.PLAY_BUTTON.module} />
-              </TouchableHighlight>
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={onStopPressed}
-                disabled={!isPlaybackAllowed || isLoading}
-              >
-                <Image style={styles.image} source={Icons.STOP_BUTTON.module} />
-              </TouchableHighlight>
-            </View>
-            <View />
+              />
+            ) : (
+              <Icon
+                style={{ ...styles.roundIcon, color: theme.colors.primary }}
+                name={isRecording ? 'stop' : 'microphone'}
+                onPress={onRecordPressed}
+              />
+            )}
           </View>
-          <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
-            <Text style={styles.timestamp}>Rate:</Text>
-            <Slider
-              style={styles.rateSlider}
-              trackImage={Icons.TRACK_1.module}
-              thumbImage={Icons.THUMB_1.module}
-              value={rate / RATE_SCALE}
-              onSlidingComplete={onRateSliderSlidingComplete}
-              disabled={!isPlaybackAllowed || isLoading}
-            />
-            <TouchableHighlight
-              underlayColor={BACKGROUND_COLOR}
-              style={styles.wrapper}
-              onPress={onPitchCorrectionPressed}
-              disabled={!isPlaybackAllowed || isLoading}
-            >
-              <Text style={[{ fontFamily: 'sans-serif' }]}>PC: {shouldCorrectPitch ? 'yes' : 'no'}</Text>
-            </TouchableHighlight>
-          </View>
-          <View />
+          {isRecording ? <Text>{recordingTimestamp}</Text> : null}
+        </View>
+        <View style={styles.bottomContainer}>
+          <Button
+            disabled={!sound}
+            onPress={onDiscardPressed}
+            mode='outlined'
+            style={styles.button}
+            labelStyle={styles.buttonLabel}
+          >
+            DISCARD
+          </Button>
+          <Button
+            disabled={!fileInfo}
+            onPress={onSharePressed}
+            mode='contained'
+            style={styles.button}
+            labelStyle={styles.buttonLabel}
+          >
+            SHARE
+          </Button>
         </View>
       </View>
     </Screen>
@@ -446,9 +364,8 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
 };
 
 const styles = StyleSheet.create({
-  emptyContainer: {
-    alignSelf: 'stretch',
-    backgroundColor: BACKGROUND_COLOR,
+  noPermissionsText: {
+    textAlign: 'center',
   },
   container: {
     flex: 1,
@@ -456,49 +373,51 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     alignSelf: 'stretch',
-    backgroundColor: BACKGROUND_COLOR,
-    minHeight: DEVICE_HEIGHT,
-    maxHeight: DEVICE_HEIGHT,
+    width: '100%',
   },
-  noPermissionsText: {
+  topContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 2,
+    width: '100%',
+  },
+  topText: {
+    fontSize: 40,
+  },
+  middleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 4,
+    width: '100%',
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 0.3 * DEVICE_WIDTH,
+    width: 0.3 * DEVICE_WIDTH,
+    borderStyle: 'solid',
+    borderWidth: 5,
+    borderRadius: 1000,
+  },
+  roundIcon: {
     textAlign: 'center',
+    fontSize: 60,
   },
-  wrapper: {},
-  halfScreenContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    minHeight: DEVICE_HEIGHT / 2.0,
-    maxHeight: DEVICE_HEIGHT / 2.0,
-  },
-  recordingContainer: {
+  bottomContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    alignSelf: 'stretch',
-    minHeight: Icons.RECORD_BUTTON.height,
-    maxHeight: Icons.RECORD_BUTTON.height,
+    flexGrow: 1,
+    width: '100%',
   },
-  recordingDataContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    minHeight: Icons.RECORD_BUTTON.height,
-    maxHeight: Icons.RECORD_BUTTON.height,
-    minWidth: Icons.RECORD_BUTTON.width * 3.0,
-    maxWidth: Icons.RECORD_BUTTON.width * 3.0,
+  button: {
+    width: '40%',
   },
-  recordingDataRowContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    minHeight: Icons.RECORDING.height,
-    maxHeight: Icons.RECORDING.height,
+  buttonLabel: {
+    fontSize: 20,
   },
   playbackContainer: {
     flex: 1,
@@ -506,70 +425,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     alignSelf: 'stretch',
-    minHeight: Icons.THUMB_1.height * 2.0,
-    maxHeight: Icons.THUMB_1.height * 2.0,
+    paddingTop: 30,
+    minHeight: 10,
+    maxHeight: 10,
   },
   playbackSlider: {
     alignSelf: 'stretch',
-  },
-  liveText: {
-    color: LIVE_COLOR,
-  },
-  recordingTimestamp: {
-    paddingLeft: 20,
   },
   playbackTimestamp: {
     textAlign: 'right',
     alignSelf: 'stretch',
     paddingRight: 20,
-  },
-  image: {
-    backgroundColor: BACKGROUND_COLOR,
-  },
-  textButton: {
-    backgroundColor: BACKGROUND_COLOR,
-    padding: 10,
-  },
-  buttonsContainerBase: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  buttonsContainerTopRow: {
-    maxHeight: Icons.MUTED_BUTTON.height,
-    alignSelf: 'stretch',
-    paddingRight: 20,
-  },
-  playStopContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minWidth: ((Icons.PLAY_BUTTON.width + Icons.STOP_BUTTON.width) * 3.0) / 2.0,
-    maxWidth: ((Icons.PLAY_BUTTON.width + Icons.STOP_BUTTON.width) * 3.0) / 2.0,
-  },
-  volumeContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minWidth: DEVICE_WIDTH / 2.0,
-    maxWidth: DEVICE_WIDTH / 2.0,
-  },
-  volumeSlider: {
-    width: DEVICE_WIDTH / 2.0 - Icons.MUTED_BUTTON.width,
-  },
-  buttonsContainerBottomRow: {
-    maxHeight: Icons.THUMB_1.height,
-    alignSelf: 'stretch',
-    paddingRight: 20,
-    paddingLeft: 20,
-  },
-  timestamp: {
-    fontFamily: 'sans-serif',
-  },
-  rateSlider: {
-    width: DEVICE_WIDTH / 2.0,
   },
 });
