@@ -13,13 +13,15 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#fa974d',
-    text: '#404040',
+    text: '#202020',
+    background: '#fff',
   },
 };
 
 export type RootStackRoutes = {
   signIn: undefined;
   drawer: {
+    userName?: string;
     cityName: string;
     shiftName: string;
   };

@@ -14,6 +14,8 @@ interface BottomButtonsProps {
 export const BottomButtons: React.FC<BottomButtonsProps> = (props) => {
   const { buttons } = props;
 
+  const buttonWidth = `${80 / buttons.length}%`;
+
   return (
     <View style={styles.buttonContainer}>
       {buttons.map((button, index) => (
@@ -22,7 +24,7 @@ export const BottomButtons: React.FC<BottomButtonsProps> = (props) => {
           disabled={button.disabled}
           onPress={button.onPress}
           mode={button.mode}
-          style={styles.button}
+          style={[styles.button, { width: buttonWidth }]}
           labelStyle={styles.buttonLabel}
         >
           {button.label}
@@ -40,9 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  button: {
-    width: '40%',
-  },
+  button: {},
   buttonLabel: {
     fontSize: 20,
   },

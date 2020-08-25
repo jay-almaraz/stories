@@ -2,7 +2,7 @@ import { Picker } from '@react-native-community/picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 
 import { RootStackRoutes } from '../../App';
 
@@ -10,11 +10,13 @@ type SignInScreenProps = StackScreenProps<RootStackRoutes, 'signIn'>;
 export const SignInScreen: React.FC<SignInScreenProps> = (props): ReactElement => {
   const { navigation } = props;
 
-  const [cityName, setCityName] = useState('');
-  const [shiftName, setShiftName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [cityName, setCityName] = useState('Brisbane');
+  const [shiftName, setShiftName] = useState('Brisbane Shift');
 
   return (
     <View style={styles.mainView}>
+      <TextInput label='Your Name (Optional)' value={userName} onChangeText={(text) => setUserName(text)} mode='flat' />
       <Picker selectedValue={cityName} onValueChange={(value) => setCityName(value as string)}>
         <Picker.Item value='Brisbane' label='Brisbane' />
         <Picker.Item value='Sydney' label='Sydney' />
@@ -25,7 +27,12 @@ export const SignInScreen: React.FC<SignInScreenProps> = (props): ReactElement =
         <Picker.Item value='Sydney Shift' label='Sydney Shift' />
         <Picker.Item value='Melbourne Shift' label='Melbourne Shift' />
       </Picker>
-      <Button disabled={!cityName || !shiftName} onPress={() => navigation.push('drawer', { cityName, shiftName })}>
+      <Button
+        disabled={!cityName || !shiftName}
+        onPress={() =>
+          navigation.navigate('drawer', { userName: userName ? userName : undefined, cityName, shiftName })
+        }
+      >
         SIGN IN
       </Button>
     </View>

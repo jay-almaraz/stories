@@ -19,7 +19,10 @@ const { width: DEVICE_WIDTH } = Dimensions.get('window');
 
 type RecordScreenProps = StackScreenProps<ShareStackRoutes, 'record'>;
 export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement => {
-  const { navigation } = props;
+  const {
+    navigation,
+    route: { params },
+  } = props;
 
   const theme = useTheme();
 
@@ -215,11 +218,6 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
     setFileInfo(null);
   }, [sound, setSound]);
 
-  const onSharePressed = useCallback(() => {
-    if (!fileInfo) return;
-    console.log('sharing file', fileInfo);
-  }, [fileInfo]);
-
   const onSeekSliderValueChanged = useCallback(() => {
     if (!sound || isSeeking) return;
 
@@ -268,6 +266,15 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
     return padWithZero(minutes) + ':' + padWithZero(seconds);
   }, []);
 
+  const onSharePressed = useCallback(() => {
+    if (!fileInfo || !recordingDuration) return;
+    navigation.navigate('share', {
+      file: fileInfo,
+      recordingDuration: getMMSSFromMillis(recordingDuration),
+      categoryName: params.categoryName,
+    });
+  }, [fileInfo, navigation, recordingDuration, params, getMMSSFromMillis]);
+
   const playbackTimestamp = useMemo(() => {
     if (sound && soundPosition !== null && soundDuration !== null) {
       return `${getMMSSFromMillis(soundPosition)} / ${getMMSSFromMillis(soundDuration)}`;
@@ -297,12 +304,12 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
   }
 
   return (
-    <Screen title='Record' drawerHelpers={navigation.dangerouslyGetParent()}>
+    <Screen title='Share' drawerHelpers={navigation.dangerouslyGetParent()}>
       <View style={styles.container}>
         <View style={styles.topContainer}>
           {sound ? (
             <>
-              <Text style={styles.topText}>Review Your Story</Text>
+              <Text style={styles.topText}>{`Review Your Story About ${params.categoryName}`}</Text>
               <View style={styles.playbackContainer}>
                 <Slider
                   style={styles.playbackSlider}
@@ -318,7 +325,7 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
               </View>
             </>
           ) : (
-            <Text style={styles.topText}>Share Your Story</Text>
+            <Text style={styles.topText}>{`Share Your Story About ${params.categoryName}`}</Text>
           )}
         </View>
         <View style={styles.middleContainer}>
@@ -383,6 +390,7 @@ const styles = StyleSheet.create({
   },
   topText: {
     fontSize: 40,
+    textAlign: 'center',
   },
   middleContainer: {
     flex: 1,
