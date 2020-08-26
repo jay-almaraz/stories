@@ -22,6 +22,8 @@ services:
       args: 
         ENVIRONMENT: ${ENVIRONMENT:-dev}
     container_name: stories-php
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /var/stories-server/stories-upload.json
     volumes:
       - .:/var/stories-server
     networks:

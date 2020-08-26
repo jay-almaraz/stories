@@ -1,6 +1,5 @@
 ROOT=.
 VENDOR=$(ROOT)/vendor
-PHP_CONF=$(ROOT)/php-fpm
 SRC=$(ROOT)/src
 
 PHP_CONTAINER=stories-php
@@ -19,7 +18,7 @@ phpstan:
 		"$(VENDOR)/bin/phpstan \
 			analyse src \
 			--level max \
-			-c $(PHP_CONF)/phpstan.neon \
+			-c $(ROOT)/phpstan.neon \
 			--memory-limit=1G"
 
 dump:

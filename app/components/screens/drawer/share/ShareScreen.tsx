@@ -1,5 +1,8 @@
 import { Picker } from '@react-native-community/picker';
 import { StackScreenProps } from '@react-navigation/stack';
+import { AxiosError } from 'axios';
+import useAxios from 'axios-hooks';
+import { getType } from 'mime';
 import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
@@ -16,6 +19,20 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
     navigation,
     route: { params },
   } = props;
+
+  const [, runShareStoryRequest] = useAxios<unknown>(
+    {
+      url: 'http://192.168.0.16:6080/stories/share',
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    },
+    {
+      manual: true,
+      useCache: false,
+    }
+  );
 
   const user = useUserContext();
 
@@ -64,20 +81,41 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
               {
                 disabled: !title,
                 onPress: () => {
-                  fetch(params.file.uri).then((res) => {
-                    const formData = new FormData();
-                    res.blob().then((blob) => {
-                      formData.append('title', title);
-                      formData.append('categoryName', categoryName);
-                      formData.append('file', blob, 'RECORDING');
+                  const formData = new FormData();
+                  formData.append('title', title);
+                  formData.append('categoryName', categoryName);
+                  formData.append('cityName', user.cityName);
+                  formData.append('shiftName', user.shiftName);
+                  formData.append('recordingDuration', params.recordingDuration);
+                  formData.append(
+                    'recording',
+                    {
+                      uri: params.file.uri,
+                      type: getType(params.file.uri) ?? 'video/3gpp',
+                      name: params.file.uri.split('/').pop() ?? 'recording.3gp',
+                    },
+                    'RECORDING'
+                  );
 
-                      if (userName) formData.append('userName', userName);
-                      if (description) formData.append('description', description);
+                  if (userName) formData.append('userName', userName);
+                  if (description) formData.append('description', description);
 
-                      console.log(JSON.stringify(formData));
-                      navigation.navigate('thanks');
-                    });
-                  });
+                  console.log(params);
+                  console.log(formData);
+
+                  runShareStoryRequest({
+                    data: formData,
+                  })
+                    .then((res) => {
+                      if (res.status >= 200 && res.status < 300) {
+                        console.log(res.data);
+                        // navigation.navigate('thanks');
+                        return;
+                      }
+
+                      console.error(`Unable to share story: ${res.status}`);
+                    })
+                    .catch((e: AxiosError) => console.error(`Unable to share story: ${e.message}`));
                 },
                 mode: 'contained',
                 label: 'SUBMIT',

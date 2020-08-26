@@ -1,0 +1,9 @@
+parameters:
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - '#Short ternary operator is not allowed.*#'
+
+        -
+            message: '#Should not use node with type "Stmt_Echo", please change the code.#'
+            paths:
+                - src/Api/Http/ResponseSender.php
