@@ -1,0 +1,14 @@
+# Here is a default, placeholder config file for
+# the MariaDB container to use.
+#
+# This directory (db/configs) is
+# volumed into the container. Any `.cnf` file that
+# is added will be picked up by the database server
+# after the conatiner is restarted.
+#
+# Changes to existing config files will also
+# require a container restart for them to be activated.
+[mysqld]
+event_scheduler=ON
+skip-name-resolve
+

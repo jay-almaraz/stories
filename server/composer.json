@@ -1,0 +1,27 @@
+{
+  "name": "alex-mclean/stories-server",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Alex McLean",
+      "email": "alex.mclean95@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Stories\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-strict-rules": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "ekino/phpstan-banned-code": "^0.3"
+  }
+}
