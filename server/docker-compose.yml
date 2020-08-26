@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: php-fpm/Dockerfile
+      args: 
+        ENVIRONMENT: ${ENVIRONMENT:-dev}
     container_name: stories-php
     volumes:
       - .:/var/stories-server
