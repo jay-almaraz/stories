@@ -49,9 +49,7 @@ class ApiBootstrap
     private function getDispatcherResponder(): DispatcherResponder {
         return new DispatcherResponder(
             new DispatcherFoundResponder(
-                new HandlerContainer(
-                    $this->logger,
-                )
+                $this->logger
             )
         );
     }

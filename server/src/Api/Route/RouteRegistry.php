@@ -3,19 +3,19 @@
 namespace Stories\Api\Route;
 
 use FastRoute\RouteCollector;
-use Stories\Api\Handler\Health\HealthCheckHandlerFactory;
+use Stories\Api\Handler\Health\HealthCheckHandler;
 use Stories\Api\Http\Method;
-use Stories\Domain\Handler\GetStories\GetStoriesHandlerFactory;
-use Stories\Domain\Handler\ShareStory\ShareStoryHandlerFactory;
+use Stories\Domain\Handler\GetStoriesHandler;
+use Stories\Domain\Handler\ShareStoryHandler;
 
 class RouteRegistry
 {
     public function addRoutes(RouteCollector $r): void
     {
-        $r->addRoute([Method::GET], '/', HealthCheckHandlerFactory::class);
-        $r->addRoute([Method::GET], '/health-check', HealthCheckHandlerFactory::class);
+        $r->addRoute([Method::GET], '/', HealthCheckHandler::class);
+        $r->addRoute([Method::GET], '/health-check', HealthCheckHandler::class);
 
-        $r->addRoute([Method::GET], '/stories', GetStoriesHandlerFactory::class);
-        $r->addRoute([Method::POST], '/stories/share', ShareStoryHandlerFactory::class);
+        $r->addRoute([Method::GET], '/stories', GetStoriesHandler::class);
+        $r->addRoute([Method::POST], '/stories/share', ShareStoryHandler::class);
     }
 }

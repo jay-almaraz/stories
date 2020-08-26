@@ -1,6 +1,6 @@
 <?php
 
-namespace Stories\Domain\Handler\ShareStory;
+namespace Stories\Domain\Handler;
 
 use Stories\Api\Handler\Handler;
 use Stories\Api\Http\FileException;
@@ -13,7 +13,7 @@ use Stories\Metal\Db\DbException;
 use Stories\Metal\Google\Storage\GoogleException;
 use Stories\Metal\Google\Storage\GoogleFileUploader;
 
-class ShareStoryHandler implements Handler
+class ShareStoryHandler extends Handler
 {
     /**
      * @return Response

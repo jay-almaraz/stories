@@ -2,69 +2,67 @@
 
 namespace Stories\Api\Route;
 
-use Stories\Api\Handler\HandlerFactory;
-use Stories\Api\HandlerContainer;
+use Psr\Log\LoggerInterface;
+use Stories\Api\Handler\Handler;
 use Stories\Api\Http\Response;
 use Stories\Api\Http\StatusCode;
 use Throwable;
 
 class DispatcherFoundResponder
 {
-    private HandlerContainer $handlerContainer;
+    private LoggerInterface $logger;
 
-    public function __construct(HandlerContainer $handlerContainer)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->handlerContainer = $handlerContainer;
+        $this->logger = $logger;
     }
 
     /**
-     * @param string       $handlerFactoryClass
+     * @param string       $handlerClass
      * @param array<mixed> $vars
      *
      * @return Response
      */
-    public function respond(string $handlerFactoryClass, array $vars): Response
+    public function respond(string $handlerClass, array $vars): Response
     {
-        if (is_subclass_of($handlerFactoryClass, HandlerFactory::class)) {
-            return $this->handlerFactoryRespond($handlerFactoryClass, $vars);
+        if (is_subclass_of($handlerClass, Handler::class)) {
+            return $this->handlerRespond($handlerClass, $vars);
         }
 
         return new Response(StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * @param string       $handlerFactoryClass
+     * @param string       $handlerClass
      * @param array<mixed> $vars
      *
      * @return Response
      *
-     * @phpstan-param class-string<HandlerFactory> $handlerFactoryClass
+     * @phpstan-param class-string<Handler> $handlerClass
      */
-    private function handlerFactoryRespond(string $handlerFactoryClass, array $vars): Response
+    private function handlerRespond(string $handlerClass, array $vars): Response
     {
         try {
-            /** @var HandlerFactory $handlerFactory */
-            $handlerFactory = new $handlerFactoryClass($this->handlerContainer);
-            $handler = $handlerFactory->getHandler($vars);
+            /** @var Handler $handler */
+            $handler = new $handlerClass($this->logger);
             return $handler->handle();
         } catch (Throwable $e) {
-            $this->logUncaughtException($handlerFactoryClass, $vars, $e);
+            $this->logUncaughtException($handlerClass, $vars, $e);
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * @param string       $handlerFactoryClass
+     * @param string       $handlerClass
      * @param array<mixed> $vars
      * @param Throwable    $e
      */
-    private function logUncaughtException(string $handlerFactoryClass, array $vars, Throwable $e): void
+    private function logUncaughtException(string $handlerClass, array $vars, Throwable $e): void
     {
-        $logger = $this->handlerContainer->getLogger();
-        $logger->error(
+        $this->logger->error(
             'Uncaught exception in handler',
             [
-                'handler' => $handlerFactoryClass,
+                'handler' => $handlerClass,
                 'vars'    => $vars,
                 'message' => $e->getMessage(),
                 'trace'   => $e->getTraceAsString(),

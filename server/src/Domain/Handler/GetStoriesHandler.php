@@ -1,6 +1,6 @@
 <?php
 
-namespace Stories\Domain\Handler\GetStories;
+namespace Stories\Domain\Handler;
 
 use mysqli_result;
 use Stories\Api\Handler\Handler;
@@ -9,7 +9,7 @@ use Stories\Api\Http\StatusCode;
 use Stories\Metal\Db\DbConnectionFactory;
 use Stories\Metal\Db\DbException;
 
-class GetStoriesHandler implements Handler
+class GetStoriesHandler extends Handler
 {
     /**
      * @return Response

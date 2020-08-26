@@ -2,9 +2,17 @@
 
 namespace Stories\Api\Handler;
 
+use Psr\Log\LoggerInterface;
 use Stories\Api\Http\Response;
 
-interface Handler
+abstract class Handler
 {
-    public function handle(): Response;
+    protected LoggerInterface $logger;
+
+    final public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    abstract public function handle(): Response;
 }
