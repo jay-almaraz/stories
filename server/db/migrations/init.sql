@@ -8,7 +8,7 @@ CREATE TABLE `stories`
     `category`    varchar(512) COLLATE utf8mb4_bin  NOT NULL,
     `city`        varchar(512) COLLATE utf8mb4_bin  NOT NULL,
     `shift`       varchar(512) COLLATE utf8mb4_bin  NOT NULL,
-    `duration`    int(11)                           NOT NULL,
+    `duration`    varchar(32) COLLATE utf8mb4_bin   NOT NULL,
     `url`         varchar(2048) COLLATE utf8mb4_bin NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
