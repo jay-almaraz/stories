@@ -20,7 +20,7 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
     route: { params },
   } = props;
 
-  const [, runShareStoryRequest] = useAxios<unknown>(
+  const [shareStoryRequest, runShareStoryRequest] = useAxios<unknown>(
     {
       url: 'http://192.168.0.16:6080/stories/share',
       method: 'POST',
@@ -79,7 +79,7 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
                 label: 'CANCEL',
               },
               {
-                disabled: !title,
+                disabled: shareStoryRequest.loading,
                 onPress: () => {
                   const formData = new FormData();
                   formData.append('title', title);
@@ -100,16 +100,12 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
                   if (userName) formData.append('userName', userName);
                   if (description) formData.append('description', description);
 
-                  console.log(params);
-                  console.log(formData);
-
                   runShareStoryRequest({
                     data: formData,
                   })
                     .then((res) => {
                       if (res.status >= 200 && res.status < 300) {
-                        console.log(res.data);
-                        // navigation.navigate('thanks');
+                        navigation.navigate('thanks');
                         return;
                       }
 

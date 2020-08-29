@@ -44,7 +44,7 @@ class DispatcherFoundResponder
     {
         try {
             /** @var Handler $handler */
-            $handler = new $handlerClass($this->logger);
+            $handler = new $handlerClass($this->logger, $vars);
             return $handler->handle();
         } catch (Throwable $e) {
             $this->logUncaughtException($handlerClass, $vars, $e);

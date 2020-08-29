@@ -9,7 +9,7 @@ use Stories\Api\Http\StatusCode;
 use Stories\Metal\Db\DbConnectionFactory;
 use Stories\Metal\Db\DbException;
 
-class GetStoriesHandler extends Handler
+class GetStoryHandler extends Handler
 {
     /**
      * @return Response
@@ -18,11 +18,12 @@ class GetStoriesHandler extends Handler
     public function handle(): Response
     {
         $dbConnection = DbConnectionFactory::getConnection();
-        $stories = $dbConnection->query('SELECT * FROM stories WHERE approved = 1;');
+        $id = mysqli_real_escape_string($dbConnection, $this->vars['id']);
+        $stories = $dbConnection->query('SELECT * FROM stories WHERE approved = 1 AND id = "' . $id . '";');
         if (!($stories instanceof mysqli_result)) {
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return new Response(StatusCode::OK, $stories->fetch_all(MYSQLI_ASSOC));
+        return new Response(StatusCode::OK, $stories->fetch_assoc());
     }
 }

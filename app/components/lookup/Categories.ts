@@ -1,27 +1,33 @@
 export interface Category {
   name: string;
-  icon: string;
+  faIcon: string;
+  communityIcon: string;
 }
 export const Categories: Category[] = [
   {
     name: 'Finance',
-    icon: 'money',
+    faIcon: 'money',
+    communityIcon: 'currency-usd',
   },
   {
     name: 'Food',
-    icon: 'cutlery',
+    faIcon: 'cutlery',
+    communityIcon: 'food-fork-drink',
   },
   {
     name: 'Housing',
-    icon: 'home',
+    faIcon: 'home',
+    communityIcon: 'home',
   },
   {
     name: 'Health',
-    icon: 'medkit',
+    faIcon: 'medkit',
+    communityIcon: 'medical-bag',
   },
   {
     name: 'Sport',
-    icon: 'futbol-o',
+    faIcon: 'futbol-o',
+    communityIcon: 'soccer',
   },
 ];
 

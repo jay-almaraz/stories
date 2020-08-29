@@ -29,7 +29,7 @@ export const CategoriesScreen: React.FC<CategoriesScreenProps> = (props): ReactE
               key={category.name}
             >
               <View style={styles.buttonContainer}>
-                <Icon name={category.icon} style={[styles.buttonIcon, { color: theme.colors.text }]} />
+                <Icon name={category.faIcon} style={[styles.buttonIcon, { color: theme.colors.text }]} />
                 <Text style={[styles.buttonText, { color: theme.colors.text }]}>{category.name}</Text>
               </View>
             </TouchableHighlight>

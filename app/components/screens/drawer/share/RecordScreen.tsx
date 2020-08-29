@@ -1,4 +1,5 @@
 import Slider from '@react-native-community/slider';
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { FileInfo } from 'expo-file-system';
@@ -53,6 +54,16 @@ export const RecordScreen: React.FC<RecordScreenProps> = (props): ReactElement =
       .catch((e) => console.error('Unable to ask for permissions', e));
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (sound)
+          sound.pauseAsync().catch(() => {
+            // Do nothing
+          });
+      };
+    }, [sound])
+  );
   const updateScreenForSoundStatus = useCallback(
     (status: AVPlaybackStatus) => {
       if (status.isLoaded) {

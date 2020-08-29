@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { RootStackRoutes } from '../../App';
 import { UserContext } from '../contexts/user/UserContext';
 import { HomeScreen } from '../screens/drawer/home/HomeScreen';
-import { ListenScreen } from '../screens/drawer/listen/ListenScreen';
+import { ListenMain } from '../screens/drawer/listen/ListenMain';
 import { ShareMain } from '../screens/drawer/share/ShareMain';
 import { DrawerContent } from './DrawerContent';
 
@@ -58,7 +58,7 @@ export const DrawerMain: React.FC<DrawerMainProps> = (props): ReactElement => {
         />
         <Drawer.Screen
           name='listen'
-          component={ListenScreen}
+          component={ListenMain}
           options={{
             title: 'Listen',
             drawerIcon: () => <Icon name='headphones' size={24} color={theme.colors.text} />,
