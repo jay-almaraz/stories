@@ -38,6 +38,7 @@ CREATE TABLE `story_comments`
     `datetime`   datetime                        NOT NULL,
     `session_id` varchar(64) COLLATE utf8mb4_bin NOT NULL,
     `comment`    text COLLATE utf8mb4_bin        NOT NULL,
+    `name`       varchar(512) COLLATE utf8mb4_bin DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `story_id` (`story_id`),
     CONSTRAINT `story_comments_ibfk_1` FOREIGN KEY (`story_id`) REFERENCES `stories` (`id`) ON DELETE CASCADE

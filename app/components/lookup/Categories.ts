@@ -5,6 +5,11 @@ export interface Category {
 }
 export const Categories: Category[] = [
   {
+    name: 'Art',
+    faIcon: 'paint-brush',
+    communityIcon: 'brush',
+  },
+  {
     name: 'Finance',
     faIcon: 'money',
     communityIcon: 'currency-usd',
@@ -25,9 +30,29 @@ export const Categories: Category[] = [
     communityIcon: 'medical-bag',
   },
   {
+    name: 'Nature',
+    faIcon: 'tree',
+    communityIcon: 'tree',
+  },
+  {
+    name: 'People',
+    faIcon: 'users',
+    communityIcon: 'account-multiple',
+  },
+  {
+    name: 'Services',
+    faIcon: 'building',
+    communityIcon: 'domain',
+  },
+  {
     name: 'Sport',
     faIcon: 'futbol-o',
     communityIcon: 'soccer',
+  },
+  {
+    name: 'Other',
+    faIcon: 'comment',
+    communityIcon: 'message',
   },
 ];
 

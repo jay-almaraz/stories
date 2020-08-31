@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text, Title, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Screen } from '../../../core/Screen';
@@ -18,6 +18,7 @@ export const CategoriesScreen: React.FC<CategoriesScreenProps> = (props): ReactE
 
   return (
     <Screen title='Share' drawerHelpers={navigation.dangerouslyGetParent()}>
+      <Title style={{ alignSelf: 'center' }}>Share a Story About...</Title>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
           {Categories.map((category) => (

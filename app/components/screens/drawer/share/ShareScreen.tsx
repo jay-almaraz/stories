@@ -5,7 +5,8 @@ import useAxios from 'axios-hooks';
 import { getType } from 'mime';
 import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text, TextInput } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { HelperText, Text, TextInput } from 'react-native-paper';
 
 import { useUserContext } from '../../../contexts/user/use-user-context';
 import { BottomButtons } from '../../../core/BottomButtons';
@@ -44,8 +45,8 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
 
   return (
     <Screen title='Share' drawerHelpers={navigation.dangerouslyGetParent()}>
-      <View style={styles.container}>
-        <View style={styles.topContainer}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.container} style={styles.containerScroll}>
+        <KeyboardAwareScrollView style={styles.topContainer}>
           <Text style={styles.topText}>{`Finalise Your Story About ${categoryName}`}</Text>
           <Text style={styles.topTextSubtitle}>{`Duration: ${params.recordingDuration}`}</Text>
           <Picker selectedValue={categoryName} onValueChange={(value) => setCategoryName(value as string)}>
@@ -54,21 +55,23 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
             ))}
           </Picker>
           <TextInput label='Title' value={title} onChangeText={(text) => setTitle(text)} mode='flat' />
+          <HelperText type='info'>Give your story a short title</HelperText>
           <TextInput
             label='Your Name (Optional)'
             value={userName}
             onChangeText={(text) => setUserName(text)}
             mode='flat'
           />
+          <HelperText type='info'>This name will show up when other people listen to your story</HelperText>
           <TextInput
             label='Description (Optional)'
             value={description}
             onChangeText={(text) => setDescription(text)}
             mode='flat'
-            numberOfLines={10}
+            numberOfLines={15}
             multiline
           />
-        </View>
+        </KeyboardAwareScrollView>
 
         <View style={styles.bottomContainer}>
           <BottomButtons
@@ -121,17 +124,17 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
             ]}
           />
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
     alignSelf: 'stretch',
     width: '100%',
   },

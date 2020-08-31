@@ -20,6 +20,7 @@ interface StoryWithComments extends Story {
   comments: {
     comment: string;
     datetime: string;
+    name: string | null;
   }[];
 }
 
@@ -88,7 +89,9 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
     }
   );
 
-  const [addCommentRequest, runAddCommentRequest] = useAxios<{ data: { comment: string; datetime: string } }>(
+  const [addCommentRequest, runAddCommentRequest] = useAxios<{
+    data: { comment: string; datetime: string; name: string };
+  }>(
     {
       url: `${API_URL}/stories/add-comment`,
       method: 'POST',
@@ -291,7 +294,7 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
       {sound && story ? (
         <View style={styles.container}>
           <View style={styles.topContainer}>
-            <Text style={styles.topText}>{`Listen to ${story.title}`}</Text>
+            <Text style={styles.topText}>{story.title}</Text>
             <View style={styles.playbackContainer}>
               <Slider
                 style={styles.playbackSlider}
@@ -329,7 +332,9 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
                   key={index}
                   description={comment.comment}
                   left={(props) => <List.Icon {...props} icon='comment' />}
-                  title={new Date(`${comment.datetime.replace(' ', 'T')}Z`).toLocaleString()}
+                  title={`${comment.name ? `${comment.name} - ` : ''}${new Date(
+                    `${comment.datetime.replace(' ', 'T')}Z`
+                  ).toLocaleString()}`}
                   titleStyle={{ fontSize: 10 }}
                   descriptionNumberOfLines={100}
                 />

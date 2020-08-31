@@ -1,11 +1,10 @@
 import { DrawerActionHelpers } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Appbar, useTheme } from 'react-native-paper';
 
 import { DrawerRoutes } from '../navigation/DrawerMain';
-
-const { height: DEVICE_HEIGHT } = Dimensions.get('window');
 
 interface ScreenProps {
   onGoBack?: () => void;
@@ -17,9 +16,15 @@ export const Screen: React.FC<ScreenProps> = (props): ReactElement => {
   const { onGoBack, title, subtitle, drawerHelpers, children } = props;
 
   const theme = useTheme();
+  const { height } = Dimensions.get('window');
 
   return (
-    <View style={styles.mainView}>
+    <View
+      style={{
+        height,
+        width: '100%',
+      }}
+    >
       <Appbar.Header>
         <Appbar.Action color={theme.colors.text} icon='menu' onPress={() => drawerHelpers.openDrawer()} />
         {onGoBack ? <Appbar.BackAction onPress={onGoBack} /> : null}
@@ -34,10 +39,3 @@ export const Screen: React.FC<ScreenProps> = (props): ReactElement => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  mainView: {
-    height: DEVICE_HEIGHT,
-    width: '100%',
-  },
-});

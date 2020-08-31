@@ -35,7 +35,7 @@ class GetStoryHandler extends Handler
 
         $comments = $dbConnection->query(
             'SELECT 
-            comment, datetime
+            comment, datetime, name
             FROM story_comments 
             WHERE story_id = "' . $id . '"
             ORDER BY datetime'

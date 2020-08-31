@@ -27,17 +27,18 @@ class AddCommentHandler extends Handler
         $storyId = $params['storyId'];
         $sessionId = $params['sessionId'];
         $comment = $params['comment'];
+        $name = $params['name'] ?? null;
 
         $dbStatement = $dbConnection->prepare(
-            'INSERT INTO story_comments (story_id, datetime, session_id, comment)
-            VALUES (?, NOW(), ?, ?);'
+            'INSERT INTO story_comments (story_id, datetime, session_id, comment, name)
+            VALUES (?, NOW(), ?, ?, ?);'
         );
 
         if ($dbStatement === false) {
             throw new DbException('Unable to prepare statement: ' . $dbConnection->error);
         }
 
-        $dbBind = $dbStatement->bind_param('iss', $storyId, $sessionId, $comment);
+        $dbBind = $dbStatement->bind_param('isss', $storyId, $sessionId, $comment, $name);
 
         if ($dbBind === false || $dbStatement->execute() === false) {
             throw new DbException('Unable to add comment: ' . $dbStatement->error);
@@ -45,7 +46,7 @@ class AddCommentHandler extends Handler
 
         $comment = $dbConnection->query(
             'SELECT 
-            comment, datetime
+            comment, datetime, name
             FROM story_comments 
             WHERE id = "' . $dbConnection->insert_id . '"'
         );

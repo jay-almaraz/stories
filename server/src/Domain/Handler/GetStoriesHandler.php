@@ -24,7 +24,8 @@ class GetStoriesHandler extends Handler
             FROM stories 
             LEFT JOIN story_hearts ON stories.id = story_hearts.story_id 
             WHERE approved = 1 
-            GROUP BY stories.id;'
+            GROUP BY stories.id, stories.date
+            ORDER BY stories.date DESC;'
         );
         if (!($stories instanceof mysqli_result)) {
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
