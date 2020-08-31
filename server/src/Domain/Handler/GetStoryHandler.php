@@ -19,11 +19,34 @@ class GetStoryHandler extends Handler
     {
         $dbConnection = DbConnectionFactory::getConnection();
         $id = mysqli_real_escape_string($dbConnection, $this->vars['id']);
-        $stories = $dbConnection->query('SELECT * FROM stories WHERE approved = 1 AND id = "' . $id . '";');
+
+        $stories = $dbConnection->query(
+            'SELECT 
+            stories.*, COUNT(story_hearts.id) AS hearts
+            FROM stories 
+            LEFT JOIN story_hearts ON stories.id = story_hearts.story_id 
+            WHERE approved = 1 
+            AND stories.id = "' . $id . '"
+            GROUP BY stories.id;'
+        );
         if (!($stories instanceof mysqli_result)) {
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return new Response(StatusCode::OK, $stories->fetch_assoc());
+        $comments = $dbConnection->query(
+            'SELECT 
+            comment, datetime
+            FROM story_comments 
+            WHERE story_id = "' . $id . '"
+            ORDER BY datetime'
+        );
+        if (!($comments instanceof mysqli_result)) {
+            return new Response(StatusCode::INTERNAL_SERVER_ERROR);
+        }
+
+        $story = $stories->fetch_assoc();
+        $story['comments'] = $comments->fetch_all(MYSQLI_ASSOC);
+
+        return new Response(StatusCode::OK, $story);
     }
 }

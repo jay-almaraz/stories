@@ -22,6 +22,7 @@ export type RootStackRoutes = {
   signIn: undefined;
   drawer: {
     userName?: string;
+    sessionId: string;
     cityName: string;
     shiftName: string;
   };

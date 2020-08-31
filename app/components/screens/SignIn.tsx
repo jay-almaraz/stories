@@ -3,6 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import uuid from 'react-native-uuid';
 
 import { RootStackRoutes } from '../../App';
 
@@ -30,7 +31,12 @@ export const SignInScreen: React.FC<SignInScreenProps> = (props): ReactElement =
       <Button
         disabled={!cityName || !shiftName}
         onPress={() =>
-          navigation.navigate('drawer', { userName: userName ? userName : undefined, cityName, shiftName })
+          navigation.navigate('drawer', {
+            userName: userName ? userName : undefined,
+            sessionId: uuid.v4(),
+            cityName,
+            shiftName,
+          })
         }
       >
         SIGN IN

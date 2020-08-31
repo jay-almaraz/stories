@@ -11,6 +11,7 @@ import { useUserContext } from '../../../contexts/user/use-user-context';
 import { BottomButtons } from '../../../core/BottomButtons';
 import { Screen } from '../../../core/Screen';
 import { Categories } from '../../../lookup/Categories';
+import { API_URL } from '../../../network/network-config';
 import { ShareStackRoutes } from './ShareMain';
 
 type ShareScreenProps = StackScreenProps<ShareStackRoutes, 'share'>;
@@ -22,7 +23,7 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
 
   const [shareStoryRequest, runShareStoryRequest] = useAxios<unknown>(
     {
-      url: 'http://192.168.0.16:6080/stories/share',
+      url: `${API_URL}/stories/share`,
       method: 'POST',
       headers: {
         'content-type': 'multipart/form-data',
@@ -82,6 +83,7 @@ export const ShareScreen: React.FC<ShareScreenProps> = (props): ReactElement => 
                 disabled: shareStoryRequest.loading,
                 onPress: () => {
                   const formData = new FormData();
+                  formData.append('sessionId', user.sessionId);
                   formData.append('title', title);
                   formData.append('categoryName', categoryName);
                   formData.append('cityName', user.cityName);

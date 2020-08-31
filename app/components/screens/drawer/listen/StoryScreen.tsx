@@ -4,15 +4,24 @@ import { StackScreenProps } from '@react-navigation/stack';
 import useAxios from 'axios-hooks';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Dialog, List, Portal, Text, TextInput, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { useUserContext } from '../../../contexts/user/use-user-context';
 import { Screen } from '../../../core/Screen';
+import { API_URL } from '../../../network/network-config';
 import { Story } from './BrowseScreen';
 import { ListenStackRoutes } from './ListenMain';
 
 const { width: DEVICE_WIDTH } = Dimensions.get('window');
+
+interface StoryWithComments extends Story {
+  comments: {
+    comment: string;
+    datetime: string;
+  }[];
+}
 
 type StoryScreenProps = StackScreenProps<ListenStackRoutes, 'story'>;
 export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | null => {
@@ -22,6 +31,7 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
   } = props;
 
   const theme = useTheme();
+  const user = useUserContext();
 
   const [isPlaybackAllowed, setIsPlaybackAllowed] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -37,9 +47,13 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
   const [isSeeking, setIsSeeking] = useState(false);
   const [shouldPlayAtEndOfSeek, setShouldPlayAtEndOfSeek] = useState(false);
 
-  const [getStoryRequest] = useAxios<{ data: Story }>(
+  const [comments, setComments] = useState<StoryWithComments['comments']>([]);
+  const [showDialog, setShowDialog] = useState<string | undefined>();
+  const [comment, setComment] = useState('');
+
+  const [getStoryRequest] = useAxios<{ data: StoryWithComments }>(
     {
-      url: `http://192.168.0.16:6080/story/${params.storyId}`,
+      url: `${API_URL}/story/${params.storyId}`,
       method: 'GET',
     },
     {
@@ -47,6 +61,43 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
     }
   );
   const story = getStoryRequest.loading ? undefined : getStoryRequest.data.data;
+
+  useEffect(() => {
+    setComments(story?.comments ?? []);
+  }, [story]);
+
+  const [addHeartRequest, runAddHeartRequest] = useAxios(
+    {
+      url: `${API_URL}/stories/add-heart`,
+      method: 'POST',
+    },
+    {
+      useCache: false,
+      manual: true,
+    }
+  );
+
+  const [deleteHeartRequest, runDeleteHeartRequest] = useAxios(
+    {
+      url: `${API_URL}/stories/delete-heart`,
+      method: 'POST',
+    },
+    {
+      useCache: false,
+      manual: true,
+    }
+  );
+
+  const [addCommentRequest, runAddCommentRequest] = useAxios<{ data: { comment: string; datetime: string } }>(
+    {
+      url: `${API_URL}/stories/add-comment`,
+      method: 'POST',
+    },
+    {
+      useCache: false,
+      manual: true,
+    }
+  );
 
   const updateScreenForSoundStatus = useCallback(
     (status: AVPlaybackStatus) => {
@@ -184,12 +235,63 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
     return '';
   }, [sound, soundPosition, soundDuration, getMMSSFromMillis]);
 
+  const onHeartPressed = useCallback(
+    (storyId: string) => {
+      if (addHeartRequest.loading || deleteHeartRequest.loading) return;
+      if (user.heartedStoryIds.includes(storyId)) {
+        runDeleteHeartRequest({
+          data: {
+            storyId,
+            sessionId: user.sessionId,
+          },
+        })
+          .then(() => {
+            user.removeHeartedStoryId(storyId);
+          })
+          .catch(() => console.error('Unable to remove heart'));
+        return;
+      }
+
+      runAddHeartRequest({
+        data: {
+          storyId,
+          sessionId: user.sessionId,
+        },
+      })
+        .then(() => {
+          user.addHeartedStoryId(storyId);
+        })
+        .catch(() => console.error('Unable to add heart'));
+    },
+    [addHeartRequest, deleteHeartRequest, runAddHeartRequest, runDeleteHeartRequest, user]
+  );
+
+  const addComment = useCallback(
+    (storyId: string) => {
+      if (addCommentRequest.loading) return;
+      runAddCommentRequest({
+        data: {
+          storyId,
+          sessionId: user.sessionId,
+          comment,
+        },
+      })
+        .then((res) => setComments((prevComments) => [...prevComments, res.data.data]))
+        .catch(() => console.error('Unable to add comment'))
+        .finally(() => {
+          setComment('');
+          setShowDialog(undefined);
+        });
+    },
+    [addCommentRequest, runAddCommentRequest, user, comment]
+  );
+
   return (
     <Screen title='Share' drawerHelpers={navigation.dangerouslyGetParent()}>
       {sound && story ? (
         <View style={styles.container}>
           <View style={styles.topContainer}>
-            <Text style={styles.topText}>{`Review Your Story About ${story.category}`}</Text>
+            <Text style={styles.topText}>{`Listen to ${story.title}`}</Text>
             <View style={styles.playbackContainer}>
               <Slider
                 style={styles.playbackSlider}
@@ -212,7 +314,69 @@ export const StoryScreen: React.FC<StoryScreenProps> = (props): ReactElement | n
                 onPress={onPlayPausePressed}
               />
             </View>
+            <View style={{ marginTop: 20 }}>
+              <Icon
+                style={{ ...styles.roundSubIcon, color: theme.colors.primary }}
+                name={user.heartedStoryIds.includes(story.id) ? 'heart' : 'heart-o'}
+                onPress={() => onHeartPressed(story.id)}
+              />
+            </View>
           </View>
+          <ScrollView style={styles.bottomContainerScroll} contentContainerStyle={styles.bottomContainer}>
+            <List.Section style={{ width: '100%' }}>
+              {comments.map((comment, index) => (
+                <List.Item
+                  key={index}
+                  description={comment.comment}
+                  left={(props) => <List.Icon {...props} icon='comment' />}
+                  title={new Date(`${comment.datetime.replace(' ', 'T')}Z`).toLocaleString()}
+                  titleStyle={{ fontSize: 10 }}
+                  descriptionNumberOfLines={100}
+                />
+              ))}
+              <List.Item
+                title='Add Comment'
+                left={(props) => <List.Icon {...props} icon='plus' />}
+                onPress={() => setShowDialog(story.id)}
+              />
+            </List.Section>
+          </ScrollView>
+
+          <Portal>
+            <Dialog visible={Boolean(showDialog)} onDismiss={() => setShowDialog(undefined)}>
+              <Dialog.Title>Add Comment</Dialog.Title>
+              <Dialog.Content>
+                <TextInput
+                  mode='outlined'
+                  label='Comment'
+                  placeholder='Type your comment here...'
+                  value={comment}
+                  onChangeText={(text) => setComment(text)}
+                  multiline
+                  numberOfLines={6}
+                />
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button
+                  onPress={() => {
+                    setComment('');
+                    setShowDialog(undefined);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={!comment}
+                  mode='contained'
+                  onPress={() => {
+                    if (showDialog) addComment(showDialog);
+                  }}
+                >
+                  Done
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
         </View>
       ) : null}
     </Screen>
@@ -244,10 +408,12 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    flexGrow: 4,
+    flexGrow: 2,
+    flexDirection: 'row',
     width: '100%',
+    paddingTop: 10,
   },
   iconContainer: {
     justifyContent: 'center',
@@ -262,9 +428,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 60,
   },
+  roundSubIcon: {
+    textAlign: 'center',
+    fontSize: 40,
+  },
   bottomContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  bottomContainerScroll: {
     flex: 1,
-    flexGrow: 1,
+    flexGrow: 3,
+    width: '100%',
   },
   playbackContainer: {
     flex: 1,
@@ -283,5 +458,9 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     alignSelf: 'stretch',
     paddingRight: 20,
+  },
+  commentsHeader: {
+    fontSize: 30,
+    alignSelf: 'center',
   },
 });

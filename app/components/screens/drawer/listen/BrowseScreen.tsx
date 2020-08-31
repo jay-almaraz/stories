@@ -1,11 +1,13 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import useAxios from 'axios-hooks';
-import React, { ReactElement } from 'react';
-import { ScrollView } from 'react-native';
-import { List } from 'react-native-paper';
+import React, { ReactElement, useCallback } from 'react';
+import { ScrollView, View } from 'react-native';
+import { List, Text, useTheme } from 'react-native-paper';
 
 import { Screen } from '../../../core/Screen';
 import { getCategory } from '../../../lookup/Categories';
+import { API_URL } from '../../../network/network-config';
 import { ListenStackRoutes } from './ListenMain';
 
 export interface Story {
@@ -20,20 +22,29 @@ export interface Story {
   duration: string;
   url: string;
   approved: boolean;
+  hearts: number;
 }
 
 type BrowseScreenProps = StackScreenProps<ListenStackRoutes, 'browse'>;
 export const BrowseScreen: React.FC<BrowseScreenProps> = (props): ReactElement | null => {
   const { navigation } = props;
 
-  const [getStoriesRequest] = useAxios<{ data: Story[] }>(
+  const theme = useTheme();
+
+  const [getStoriesRequest, runGetStoriesRequest] = useAxios<{ data: Story[] }>(
     {
-      url: 'http://192.168.0.16:6080/stories',
+      url: `${API_URL}/stories`,
       method: 'GET',
     },
     {
       useCache: false,
     }
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      runGetStoriesRequest();
+    }, [runGetStoriesRequest])
   );
 
   return !getStoriesRequest.loading ? (
@@ -48,6 +59,16 @@ export const BrowseScreen: React.FC<BrowseScreenProps> = (props): ReactElement |
               title={`${story.title} - ${story.city}, ${story.shift}`}
               description={story.description}
               left={(props) => <List.Icon {...props} icon={category.communityIcon} />}
+              right={() =>
+                story.hearts > 0 ? (
+                  <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                    <Text style={{ color: theme.colors.primary, fontSize: 24, marginRight: -10, marginLeft: 10 }}>
+                      {story.hearts}
+                    </Text>
+                    <List.Icon style={{ marginLeft: 0 }} icon='heart' color={theme.colors.primary} />
+                  </View>
+                ) : undefined
+              }
               descriptionNumberOfLines={2}
               descriptionEllipsizeMode='tail'
               titleNumberOfLines={2}

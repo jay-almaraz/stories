@@ -35,13 +35,14 @@ class ShareStoryHandler extends Handler
         $recordingDuration = $inputProcessor->getParam('recordingDuration');
         $userName = $inputProcessor->getParam('userName');
         $description = $inputProcessor->getParam('description');
+        $sessionId = $inputProcessor->getParam('sessionId');
 
         $recording = $fileProcessor->getFile('recording');
         $uploadedFiled = $fileUploader->uploadFile($recording, 'recordings');
 
         $dbStatement = $dbConnection->prepare(
-            'INSERT INTO stories (date, title, name, description, category, city, shift, duration, url)
-            VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?);'
+            'INSERT INTO stories (date, title, name, description, category, city, shift, duration, url, session_id)
+            VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?);'
         );
 
         if ($dbStatement === false) {
@@ -49,7 +50,7 @@ class ShareStoryHandler extends Handler
         }
 
         $dbBind = $dbStatement->bind_param(
-            str_repeat('s', 8),
+            str_repeat('s', 9),
             $title,
             $userName,
             $description,
@@ -57,7 +58,8 @@ class ShareStoryHandler extends Handler
             $cityName,
             $shiftName,
             $recordingDuration,
-            $uploadedFiled->getUrl()
+            $uploadedFiled->getUrl(),
+            $sessionId
         );
 
         if ($dbBind === false || $dbStatement->execute() === false) {

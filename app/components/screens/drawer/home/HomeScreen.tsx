@@ -1,7 +1,7 @@
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import React, { ReactElement } from 'react';
-import { StyleSheet, TouchableHighlight, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Text, TouchableRipple, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Screen } from '../../../core/Screen';
@@ -16,29 +16,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = (props): ReactElement => {
   return (
     <Screen title='Home' drawerHelpers={navigation}>
       <View style={styles.container}>
-        <TouchableHighlight
+        <TouchableRipple
           style={[styles.button, styles.topButton, { backgroundColor: theme.colors.primary }]}
           onPress={() => navigation.navigate('share')}
           underlayColor={theme.colors.primary}
-          activeOpacity={0.5}
+          rippleColor={`${theme.colors.primary}33`}
         >
           <View style={styles.buttonContainer}>
             <Icon name='microphone' style={[styles.buttonIcon, { color: theme.colors.text }]} />
             <Text style={[styles.buttonText, { color: theme.colors.text }]}>Share</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableRipple>
 
-        <TouchableHighlight
+        <TouchableRipple
           style={[styles.button, styles.topButton, { backgroundColor: theme.colors.primary }]}
           onPress={() => navigation.navigate('listen')}
           underlayColor={theme.colors.primary}
-          activeOpacity={0.5}
+          rippleColor={`${theme.colors.primary}33`}
         >
           <View style={styles.buttonContainer}>
             <Icon name='headphones' style={[styles.buttonIcon, { color: theme.colors.text }]} />
             <Text style={[styles.buttonText, { color: theme.colors.text }]}>Listen</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableRipple>
       </View>
     </Screen>
   );

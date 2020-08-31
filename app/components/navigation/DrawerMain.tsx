@@ -6,7 +6,7 @@ import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { RootStackRoutes } from '../../App';
-import { UserContext } from '../contexts/user/UserContext';
+import { UserProvider } from '../contexts/user/UserContext';
 import { HomeScreen } from '../screens/drawer/home/HomeScreen';
 import { ListenMain } from '../screens/drawer/listen/ListenMain';
 import { ShareMain } from '../screens/drawer/share/ShareMain';
@@ -28,7 +28,7 @@ export const DrawerMain: React.FC<DrawerMainProps> = (props): ReactElement => {
   const theme = useTheme();
 
   return (
-    <UserContext.Provider value={user}>
+    <UserProvider {...user}>
       <Drawer.Navigator
         initialRouteName='home'
         drawerContent={(props) => <DrawerContent {...props} />}
@@ -65,6 +65,6 @@ export const DrawerMain: React.FC<DrawerMainProps> = (props): ReactElement => {
           }}
         />
       </Drawer.Navigator>
-    </UserContext.Provider>
+    </UserProvider>
   );
 };
