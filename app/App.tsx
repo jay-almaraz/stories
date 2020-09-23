@@ -1,3 +1,10 @@
+/**
+ * Application entrypoint, to be registered as the root component in index.js
+ * Defines base theming
+ * Defines base routing
+ * Provides necessary context providers to the inner application
+ */
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';

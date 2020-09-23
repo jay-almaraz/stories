@@ -1,3 +1,7 @@
+/**
+ * Screen used for browsing previously shared stories on the app
+ */
+
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import useAxios from 'axios-hooks';

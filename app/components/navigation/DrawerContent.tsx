@@ -1,3 +1,7 @@
+/**
+ * Core drawer content of the main app drawer, takes a list of drawer items as input
+ */
+
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,

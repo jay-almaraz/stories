@@ -1,3 +1,7 @@
+/**
+ * Lookup of categories to be utilised in the app
+ */
+
 export interface Category {
   name: string;
   faIcon: string;

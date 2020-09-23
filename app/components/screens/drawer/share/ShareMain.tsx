@@ -1,3 +1,7 @@
+/**
+ * Routing for the share functionality of the app
+ */
+
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FileInfo } from 'expo-file-system';

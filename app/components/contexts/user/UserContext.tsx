@@ -1,3 +1,7 @@
+/**
+ * Context used for storing information about the current user of the app
+ */
+
 import React, { createContext, ReactElement, useCallback, useState } from 'react';
 
 export interface UserContextInterface {

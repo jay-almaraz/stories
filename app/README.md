@@ -1,5 +1,7 @@
 # Stories App
 
+`React Native` application build using `Expo` tooling.
+
 ## Local Dev
 
 1. `expo start`

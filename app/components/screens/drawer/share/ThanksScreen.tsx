@@ -1,3 +1,7 @@
+/**
+ * Screen for thanking users who have shared their story
+ */
+
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';

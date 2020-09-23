@@ -1,3 +1,7 @@
+/**
+ * Screen used for selecting a category when sharing a story
+ */
+
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';

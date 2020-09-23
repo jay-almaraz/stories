@@ -1,3 +1,7 @@
+/**
+ * Overrides inbuilt TypeScript FormData definitions to support React Native signatures
+ */
+
 interface FormDataValue {
   uri: string;
   name: string;

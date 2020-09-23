@@ -1,3 +1,7 @@
+/**
+ * Hook to use the UserContext
+ */
+
 import { useSafeContext } from '../safe-context';
 import { UserContext, UserContextInterface } from './UserContext';
 

@@ -1,3 +1,7 @@
+/**
+ * Main content of the application, including the core routes to be shown in the main app drawer
+ */
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { ReactElement } from 'react';

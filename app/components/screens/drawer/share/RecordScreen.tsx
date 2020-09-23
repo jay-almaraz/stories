@@ -1,3 +1,7 @@
+/**
+ * Screen used for recording and listening back a story that is to be shared
+ */
+
 import Slider from '@react-native-community/slider';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';

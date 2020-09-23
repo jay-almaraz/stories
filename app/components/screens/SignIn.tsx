@@ -1,3 +1,7 @@
+/**
+ * Page used to sign into the app, should be the default page
+ */
+
 import { Picker } from '@react-native-community/picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import useAxios from 'axios-hooks';

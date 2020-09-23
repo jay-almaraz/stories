@@ -1,3 +1,7 @@
+/**
+ * Style and functionality wrapper for a standard screen in the app
+ */
+
 import { DrawerActionHelpers } from '@react-navigation/native';
 import React, { ReactElement } from 'react';
 import { Dimensions, View } from 'react-native';

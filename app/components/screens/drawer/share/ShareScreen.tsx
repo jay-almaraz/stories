@@ -1,3 +1,7 @@
+/**
+ * Screen used for finalising the sharing of a story be providing accompanying details
+ */
+
 import { Picker } from '@react-native-community/picker';
 import { StackScreenProps } from '@react-navigation/stack';
 import { AxiosError } from 'axios';

@@ -1,3 +1,7 @@
+/**
+ * Buttons to be shown at the bottom of the app screen
+ */
+
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';

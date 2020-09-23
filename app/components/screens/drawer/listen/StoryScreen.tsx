@@ -1,3 +1,7 @@
+/**
+ * Screen used for listening to, hearting, and replying to a previously shared story
+ */
+
 import Slider from '@react-native-community/slider';
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';

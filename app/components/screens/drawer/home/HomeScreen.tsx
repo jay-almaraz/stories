@@ -1,3 +1,7 @@
+/**
+ * Home screen of the application, providing navigation to the core functions of the app
+ */
+
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import React, { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
