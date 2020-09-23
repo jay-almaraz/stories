@@ -2,6 +2,9 @@
 
 namespace Stories\Metal\Google\Storage;
 
+/**
+ * DTO to represent an uploaded Google Cloud Storage object
+ */
 class GoogleStorageObject
 {
     private string $bucketName;

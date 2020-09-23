@@ -14,6 +14,9 @@ use Stories\Api\Route\DispatcherFoundResponder;
 use Stories\Api\Route\DispatcherResponder;
 use Stories\Api\Route\RouteRegistry;
 
+/**
+ * Bootstrap the API architecture by instantiating, injecting, and executing the appropriate components
+ */
 class ApiBootstrap
 {
     private LoggerInterface $logger;
@@ -28,6 +31,8 @@ class ApiBootstrap
     }
 
     /**
+     * Respond to the current API request
+     *
      * @throws HttpException
      */
     public function respond(): void
@@ -39,6 +44,11 @@ class ApiBootstrap
         $this->sendResponse($dispatcher, $dispatcherResponder);
     }
 
+    /**
+     * Create a dispatcher for the API
+     *
+     * @return Dispatcher
+     */
     private function getDispatcher(): Dispatcher
     {
         $routeRegistry = new RouteRegistry();
@@ -46,6 +56,11 @@ class ApiBootstrap
         return $dispatcherFactory->getDispatcher();
     }
 
+    /**
+     * Create a dispatcher responder for incoming API requests
+     *
+     * @return DispatcherResponder
+     */
     private function getDispatcherResponder(): DispatcherResponder {
         return new DispatcherResponder(
             new DispatcherFoundResponder(
@@ -54,6 +69,9 @@ class ApiBootstrap
         );
     }
 
+    /**
+     * Log the current API request
+     */
     private function logRequest(): void
     {
         $apiRequestLogger = new ApiRequestLogger();
@@ -66,6 +84,8 @@ class ApiBootstrap
     }
 
     /**
+     * Send an appropriate response back to the origin of the current API request
+     *
      * @param Dispatcher          $dispatcher
      * @param DispatcherResponder $dispatcherResponder
      *

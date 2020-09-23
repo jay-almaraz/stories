@@ -2,6 +2,10 @@
 
 namespace Stories\Api\Http;
 
+/**
+ * Class of namespaced constants used as a reference for HTTP Status Codes
+ * @see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ */
 class StatusCode
 {
     // [Informational 1xx]

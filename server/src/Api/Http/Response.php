@@ -2,6 +2,9 @@
 
 namespace Stories\Api\Http;
 
+/**
+ * DTO to represent the request to an API request
+ */
 class Response
 {
     private int $statusCode;

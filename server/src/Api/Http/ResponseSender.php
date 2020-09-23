@@ -4,6 +4,9 @@ namespace Stories\Api\Http;
 
 use JsonException;
 
+/**
+ * Class used for sending a response object over the network
+ */
 class ResponseSender
 {
     /**
@@ -17,12 +20,19 @@ class ResponseSender
         $this->sendResponseBody($response);
     }
 
+    /**
+     * Set the response code of the network request
+     *
+     * @param Response $response
+     */
     private function setResponseCode(Response $response): void
     {
         http_response_code($response->getStatusCode());
     }
 
     /**
+     * Send the response body over the network
+     *
      * @param Response $response
      *
      * @throws HttpException
@@ -34,6 +44,8 @@ class ResponseSender
     }
 
     /**
+     * Encode the response body into JSON format, throw exception on failure
+     *
      * @param Response $response
      *
      * @return string
@@ -50,6 +62,8 @@ class ResponseSender
     }
 
     /**
+     * Get the raw, unencoded body of the response object
+     *
      * @param Response $response
      *
      * @return array<string, mixed>

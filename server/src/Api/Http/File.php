@@ -4,6 +4,9 @@ namespace Stories\Api\Http;
 
 use JsonSerializable;
 
+/**
+ * DTO representing a local file on the server, most likely as the result of a POST file upload
+ */
 class File implements JsonSerializable
 {
     private string $name;

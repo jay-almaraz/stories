@@ -1,5 +1,7 @@
 # Stories Server
 
+Sole entrypoint is found in `index.php`, all code follows from there.
+
 ## Local Dev
 
 1. `docker-compose up`
@@ -10,5 +12,5 @@
 
 1. `git pull`
 2. `ENVIRONMENT=prod docker-compose up -d`
-3. Access API at `http://backlog.alexmclean.xyz:6080/` or `http://45.77.237.8:6080/`
-4. Access Adminer at `http://backlog.alexmclean.xyz:6001/` or `http://45.77.237.8:6001/`
+3. Access API at `http://45.77.237.8:6080/`
+4. Access Adminer at `http://45.77.237.8:6001/`

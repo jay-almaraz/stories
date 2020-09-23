@@ -40,7 +40,7 @@ services:
       - 6306:3306
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'Lmx82yFCKrWFYUs'
+      MYSQL_ROOT_PASSWORD: '<PASS>'
     volumes:
       - ./db/volume:/var/lib/mysql
     networks:

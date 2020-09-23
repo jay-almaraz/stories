@@ -11,6 +11,9 @@ use Stories\Api\Http\StatusCode;
 use Stories\Metal\Db\DbConnectionFactory;
 use Stories\Metal\Db\DbException;
 
+/**
+ * Handler used to add a comment to a story
+ */
 class AddCommentHandler extends Handler
 {
     /**
@@ -20,30 +23,37 @@ class AddCommentHandler extends Handler
      */
     public function handle(): Response
     {
+        // Connect to DB and instantiate processors
         $dbConnection = DbConnectionFactory::getConnection();
         $inputProcessor = new InputProcessor();
 
+        // Extract params
         $params = $inputProcessor->getDecodedJsonBody();
         $storyId = $params['storyId'];
         $sessionId = $params['sessionId'];
         $comment = $params['comment'];
         $name = $params['name'] ?? null;
 
+        // Prepare DB INSERT statement
         $dbStatement = $dbConnection->prepare(
             'INSERT INTO story_comments (story_id, datetime, session_id, comment, name)
             VALUES (?, NOW(), ?, ?, ?);'
         );
 
+        // Check for valid statement preparation
         if ($dbStatement === false) {
             throw new DbException('Unable to prepare statement: ' . $dbConnection->error);
         }
 
+        // Bind params to DB statement
         $dbBind = $dbStatement->bind_param('isss', $storyId, $sessionId, $comment, $name);
 
+        // Check for valid statement bindings
         if ($dbBind === false || $dbStatement->execute() === false) {
             throw new DbException('Unable to add comment: ' . $dbStatement->error);
         }
 
+        // Fetch inserted comment and respond
         $comment = $dbConnection->query(
             'SELECT 
             comment, datetime, name

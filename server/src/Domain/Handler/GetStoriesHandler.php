@@ -17,7 +17,10 @@ class GetStoriesHandler extends Handler
      */
     public function handle(): Response
     {
+        // Connect to DB
         $dbConnection = DbConnectionFactory::getConnection();
+
+        // Fetch stories and respond
         $stories = $dbConnection->query(
             'SELECT 
             stories.*, COUNT(story_hearts.id) AS hearts

@@ -17,9 +17,13 @@ class GetStoryHandler extends Handler
      */
     public function handle(): Response
     {
+        // Connect to DB
         $dbConnection = DbConnectionFactory::getConnection();
+
+        // Extract params
         $id = mysqli_real_escape_string($dbConnection, $this->vars['id']);
 
+        // Fetch desired story
         $stories = $dbConnection->query(
             'SELECT 
             stories.*, COUNT(story_hearts.id) AS hearts
@@ -33,6 +37,7 @@ class GetStoryHandler extends Handler
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
+        // Fetch accompanying comments for desired story
         $comments = $dbConnection->query(
             'SELECT 
             comment, datetime, name
@@ -44,6 +49,7 @@ class GetStoryHandler extends Handler
             return new Response(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
+        // Combine fetched data and respond
         $story = $stories->fetch_assoc();
         $story['comments'] = $comments->fetch_all(MYSQLI_ASSOC);
 

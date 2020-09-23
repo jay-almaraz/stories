@@ -2,9 +2,14 @@
 
 namespace Stories\Api\Http;
 
+/**
+ * Utility class for processing the files present in an API POST request
+ */
 class FilesProcessor
 {
     /**
+     * Get a file that is assumed to be present in a request, fail by exception if not present
+     *
      * @param string $fileKey
      *
      * @return File
@@ -21,6 +26,8 @@ class FilesProcessor
     }
 
     /**
+     * Attempt to get a file that may be present in a request, return null if not present
+     *
      * @param string $fileKey
      *
      * @return File|null
@@ -28,11 +35,13 @@ class FilesProcessor
      */
     public function findFile(string $fileKey): ?File
     {
+        // Check existence of file
         $file = $_FILES[$fileKey] ?? null;
         if ($file === null) {
             return null;
         }
 
+        // Check correct format of found file
         $name = $file['name'] ?? null;
         $type = $file['type'] ?? null;
         $size = $file['size'] ?? null;
@@ -42,10 +51,12 @@ class FilesProcessor
             throw new FileException('Invalid file upload structure');
         }
 
+        // Check for any upload errors identified by PHP
         if ($error !== UPLOAD_ERR_OK) {
             throw new FileException('Error in file uploaded: ' . $error);
         }
 
+        // Validate MIME type against provided
         $actualMimeType = mime_content_type($tmpName);
         if ($actualMimeType === false) {
             throw new FileException('Unable to determine MIME type of file');

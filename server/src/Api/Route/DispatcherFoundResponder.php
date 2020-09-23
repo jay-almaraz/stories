@@ -8,6 +8,9 @@ use Stories\Api\Http\Response;
 use Stories\Api\Http\StatusCode;
 use Throwable;
 
+/**
+ * Class used for responding to an API request where a matching route has successfully been found
+ */
 class DispatcherFoundResponder
 {
     private LoggerInterface $logger;
@@ -18,6 +21,8 @@ class DispatcherFoundResponder
     }
 
     /**
+     * Attempt to respond to the found route using the accompanying handler class and parsed route variables
+     *
      * @param string       $handlerClass
      * @param array<mixed> $vars
      *
@@ -33,6 +38,8 @@ class DispatcherFoundResponder
     }
 
     /**
+     * Respond to the found route through the optimistic instantiation of the given handler class
+     *
      * @param string       $handlerClass
      * @param array<mixed> $vars
      *
@@ -53,6 +60,8 @@ class DispatcherFoundResponder
     }
 
     /**
+     * Log any uncaught exceptions in handler response methods
+     *
      * @param string       $handlerClass
      * @param array<mixed> $vars
      * @param Throwable    $e

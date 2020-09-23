@@ -2,6 +2,10 @@
 
 namespace Stories\Api\Http;
 
+/**
+ * Class of namespaced constants used as a reference for HTTP request methods
+ * @see https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+ */
 class Method
 {
     public const GET     = 'GET';

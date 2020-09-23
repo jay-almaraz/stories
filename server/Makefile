@@ -26,7 +26,7 @@ dump:
 		-h 127.0.0.1 \
 		-P 6306 \
 		-u root \
-		-pLmx82yFCKrWFYUs \
+		-p<PASS> \
 		--column-statistics=0 \
 		stories_db > /tmp/stories_db.sql
 
@@ -35,5 +35,5 @@ restore:
 		-h 127.0.0.1 \
 		-P 6306 \
 		-u root \
-		-pLmx82yFCKrWFYUs \
+		-p<PASS> \
         stories_db < /tmp/stories_db.sql

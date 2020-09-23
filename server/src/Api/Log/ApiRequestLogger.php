@@ -6,8 +6,12 @@ use Psr\Log\LoggerInterface;
 use Stories\Api\Http\InputProcessor;
 use Stories\Api\Http\ServerProcessor;
 
+/**
+ * Class used for logging an API request sent to the server
+ */
 class ApiRequestLogger
 {
+    /** @var string[] Lookup for any request content which should result in the request details being redacted */
     private const REDACTED_CONTENTS = [
         'password',
     ];
@@ -22,12 +26,21 @@ class ApiRequestLogger
         $logger->info($message, $context);
     }
 
+    /**
+     * Generate the base log message
+     *
+     * @param ServerProcessor $serverProcessor
+     *
+     * @return string
+     */
     private function getMessage(ServerProcessor $serverProcessor): string
     {
         return $serverProcessor->getHttpMethod() . ' ' . $serverProcessor->getBaseUri();
     }
 
     /**
+     * Generate the extended context of the log message
+     *
      * @param ServerProcessor $serverProcessor
      *
      * @param InputProcessor  $inputProcessor
@@ -44,6 +57,13 @@ class ApiRequestLogger
         ];
     }
 
+    /**
+     * Process the body of the API request
+     *
+     * @param string $rawBody
+     *
+     * @return string
+     */
     private function processBody(string $rawBody): string
     {
         foreach (self::REDACTED_CONTENTS as $redactedContent) {
@@ -56,6 +76,8 @@ class ApiRequestLogger
     }
 
     /**
+     * Process all params of the request
+     *
      * @param array<string, mixed> $multipartFormParams
      *
      * @return array<string, mixed>
@@ -69,6 +91,14 @@ class ApiRequestLogger
         return $processedParams;
     }
 
+    /**
+     * Process an individual param of the request
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return string
+     */
     private function processParam(string $key, string $value): string
     {
         foreach (self::REDACTED_CONTENTS as $redactedContent) {

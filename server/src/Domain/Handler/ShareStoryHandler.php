@@ -23,11 +23,13 @@ class ShareStoryHandler extends Handler
      */
     public function handle(): Response
     {
+        // Connect to DB and instantiate processors
         $dbConnection = DbConnectionFactory::getConnection();
         $inputProcessor = new InputProcessor();
         $fileProcessor = new FilesProcessor();
         $fileUploader = new GoogleFileUploader();
 
+        // Extract params
         $title = $inputProcessor->getParam('title');
         $categoryName = $inputProcessor->getParam('categoryName');
         $cityName = $inputProcessor->getParam('cityName');
@@ -37,18 +39,22 @@ class ShareStoryHandler extends Handler
         $description = $inputProcessor->getParam('description');
         $sessionId = $inputProcessor->getParam('sessionId');
 
+        // Extract files
         $recording = $fileProcessor->getFile('recording');
         $uploadedFiled = $fileUploader->uploadFile($recording, 'recordings');
 
+        // Prepare DB INSERT statement
         $dbStatement = $dbConnection->prepare(
             'INSERT INTO stories (date, title, name, description, category, city, shift, duration, url, session_id)
             VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?);'
         );
 
+        // Check for valid statement preparation
         if ($dbStatement === false) {
             throw new DbException('Unable to prepare statement: ' . $dbConnection->error);
         }
 
+        // Bind params to DB statement
         $dbBind = $dbStatement->bind_param(
             str_repeat('s', 9),
             $title,
@@ -62,10 +68,12 @@ class ShareStoryHandler extends Handler
             $sessionId
         );
 
+        // Check for valid statement bindings
         if ($dbBind === false || $dbStatement->execute() === false) {
             throw new DbException('Unable to insert story: ' . $dbStatement->error);
         }
 
+        // Success
         return new Response(StatusCode::OK);
     }
 }
