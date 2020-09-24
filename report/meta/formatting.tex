@@ -1,0 +1,25 @@
+\setcounter{secnumdepth}{2} % Number subsections but not subsubsections
+\setcounter{tocdepth}{2}    % Show subsections but not subsubsections in table of contents
+
+\pagestyle{headings}		% Chapter on left page, Section on right.
+\raggedbottom
+
+\setlength{\topmargin}		{-5mm}  % 25-5 = 20mm
+\setlength{\oddsidemargin}	{10mm}  % rhs page inner margin = 25+10mm
+\setlength{\evensidemargin}	{0mm}   % lhs page outer margin = 25mm
+\setlength{\textwidth}		{150mm} % 35 + 150 + 25 = 210mm
+\setlength{\textheight}		{240mm}
+
+\renewcommand{\baselinestretch}{1.3} % Looks like 1.5 spacing.
+
+% Stop figure/tables smaller than 3/4 page from appearing alone on a page:
+\renewcommand{\textfraction}{0.25}
+\renewcommand{\topfraction}{0.75}
+\renewcommand{\bottomfraction}{0.75}
+\renewcommand{\floatpagefraction}{0.75}
+
+% hyperref setup
+\hypersetup{
+    pdftitle={Thesis},
+    pdfauthor={Alex McLean},
+}
