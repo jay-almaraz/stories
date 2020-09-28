@@ -1,10 +1,12 @@
 \chapter{Methodology}
 
-\section{Intent}
+\section{Project Aim}
 
-To provide a practical component to this report, we intend to design and implement a generic technological solution that connects an NFP directly to those experiencing homelessness. We believe that this practical implementation will enable us to extend our investigation to include the entire life cycle of a technology based solution in this space. In designing and developing the application we will be exposed to the processes and considerations which lead to a realised product; this exposure will be from both the NFP, and from those experiencing homelessness. Further to these initial phases of the product, we will also be involved in the delivery and roll-out strategies for this application; and will study the implications and receptions to these strategies from both perspectives. Lastly, we will discuss the process of iterating on the application, through the facilitation of an ongoing feedback loop between the NFP, the users, and the developers.
+To provide a practical component to this report, we intend to design and implement a generic technological solution that connects an NFP directly to those experiencing homelessness. We believe that this practical implementation will enable us to extend our investigation to include the entire life cycle of a technology-based solution in this space. In designing and developing the application we will be exposed to the processes and considerations which lead to a realised product; this exposure will be from both the NFP, and from those experiencing homelessness. Further to these initial phases of the product, we will also be involved in the delivery and roll-out strategies for this application; and will study the implications and receptions to these strategies from both perspectives. Lastly, we will discuss the process of iterating on the application, through the facilitation of an ongoing feedback loop between the NFP, the users, and the developers.
 
-Using this approach, we aim to further some understandings already presented in the literature. We believe that this method of undertaking will also give us the most exposure to all facets of the technology life cycle in this space and will therefore provide us with the greatest potential for unexpected or unforeseen learnings. Additionally, to this process providing eventual academic findings, we also aim to provide mutual benefit to both the NFP and the individuals experiencing homelessness who participate in our program. We do not believe it to be ethically viable to perform this study without a primary focus of providing actual recognised benefit to all participants. In discussion of our results, we will also critique our success in providing this benefit.
+Using this approach, we aim to further some understandings already presented in the literature. We believe that this method of undertaking will also give us the most exposure to all facets of the technology life cycle in this space and will therefore provide us with the greatest potential for unexpected or unforeseen learnings. Furthermore, in addition to contributing to empirical evidence, we also aim to provide mutual benefit to both the NFP and the individuals experiencing homelessness who participate in our program. We do not believe it to be ethically viable to perform this study without a primary focus of providing actual recognised benefit to all participants. In discussion of our results, we will also critique our success in providing this benefit.
+
+We also note that prior to the engagement of any external participants, formal ethical approval was received from The University of Queensland and the National Statement on Ethical Conduct in Human Research (approval number 2020000631). This study ensures adherence to the guidelines of the ethical review process.
 
 \section{Requirements}
 
@@ -12,7 +14,7 @@ In an effort to simplify the design process, it was apparent that a core problem
 
 \subsection{Problem Area}
 
-It was well established by Orange Sky, an NFP with a proud mission of \emph{Positively Connecting Communities}, that an emphasis on interpersonal connection would be seen as immensely beneficial to the organisation. It was also established that Orange Sky stakeholders could be separated into the following five groups:
+It was well established by Orange Sky, an NFP with a proud mission of \emph{Positively Connecting Communities}, that an emphasis on interpersonal connection would be seen by the organisation as immensely beneficial in improving the lives of those who use their services. It was also established that Orange Sky stakeholders could be separated into the following five groups:
 
 \begin{itemize}
     \item \emph{Friends}: A term used to describe any users of the Orange Sky services, as well those who visit shift but do not participate directly. Usually synonymous with those experiencing homelessness, but also extending to the financially insecure, nomads, and others in need of service.
@@ -22,7 +24,7 @@ It was well established by Orange Sky, an NFP with a proud mission of \emph{Posi
     \item \emph{Followers}: Generally speaking, this group encompasses any stakeholder within Orange Sky who does not fit into the above groups. Although these individuals may not use, operate, fund, or work for Orange Sky, they may be a devout supporter on social media or something similar.
 \end{itemize}
 
-If we were to consider all possible connections of two stakeholders within the Orange Sky community, including self-referential connection within a single group, there are 15 possible types of connections involving just two stakeholders. Working with the knowledge of the operational model of Orange Sky, we aim to identify some gaps that may exist in these 15 combinations, and will ultimately aim to bridge these gaps through the implementation of connecting technology. We note that as with the rest of this study, we have an explicit affinity towards connecting those experiencing homelessness, and will thus consider the connections not involving this group to be outside the scope of this design. However, to have a comprehensive understanding of Orange Sky, we have still documented these out of scope connections in Table \ref{connectiontable}.
+If we were to consider all possible connections of two stakeholders within the Orange Sky community, including self-referential connection within a single group, there are 15 possible types of connections involving just two stakeholders. Working with the knowledge of the operational model of Orange Sky, we aim to identify some gaps that may exist in these 15 combinations, and will ultimately aim to bridge these gaps through the implementation of connecting technology. We note that as with the rest of this study, we have an explicit affinity towards connecting those experiencing homelessness, and will thus consider the connections not involving this group to be outside the scope of this design. However, to have a comprehensive understanding of Orange Sky, we have still documented these out of scope connections in Table \ref{connectiontable}. We have also identified for each connection whether it is augmented by modern technologies, and also in what direction the connection flows, accounting for situations where it may be unidirectional in nature.
 
 \begin{table}[h]
     \rowcolors{2}{lightgray!50!white!50!}{white}
@@ -52,6 +54,8 @@ If we were to consider all possible connections of two stakeholders within the O
     \label{connectiontable}
 \end{table}
 
+\clearpage
+
 It is important to emphasise that Table \ref{connectiontable} simply documents the connections that are directly facilitated by Orange Sky as part of their operating model. This is not to say that other connections do not occur, such as followers interacting with each other on social media, however these extra connection mechanisms are not occurring as a direct result of Orange Sky's model.
 
 Of most interest to our project, based on the prior findings and discussion in this report, are rows in which some or all of following criteria is met:
@@ -75,7 +79,7 @@ Whilst the mutual exclusivity present in these criteria results in no one row be
 
 It is immediately evident that every single combination involving the \emph{Friends} stakeholder group has been identified as meeting the criteria necessary for being included in the further design of this project. Whilst this connection analysis was not capable of narrowing down our scope, we now have a greater understanding of the wider landscape of Orange Sky, and also have a more detailed understanding of the connection shortcomings for \emph{Friends}.
 
-To tighten the scope of our project before continuation, it was collectively decided that the criteria of unidirectional flow would be dropped, based on the reasoning that rows meeting solely these criteria were at least providing some form of technology based connection. Upon tightening these criteria, we were able to more concisely define our problem area in the following statements:
+To tighten the scope of our project before continuation, it was collectively decided that the criteria of unidirectional flow would be dropped, based on the reasoning that rows meeting solely these criteria were at least providing some form of technology-based connection. Upon tightening these criteria, we were able to more concisely define our problem area in the following statements:
 
 \begin{itemize}
     \item The primary focus of our application is on connection throughout the Orange Sky community as experienced by \emph{Friends}.
@@ -84,6 +88,8 @@ To tighten the scope of our project before continuation, it was collectively dec
 
 These statements will be the main reference point for the following design discussion, in which specific requirements will be distilled. The statements that did meet some criteria, but where subsequently filtered out for this project, provide an excellent platform for future work.
 
+Upon analysis of the requirements distilled from the problem area stated above, both non-functional and functional, it was concluded that a story sharing application would enable these requirements to be met in their entirety. The distillation of these requirements, and the subsequent development of this application, are outlined below.
+
 \subsection{Non-functional Requirements}
 
 Based on the operational models and geographical distribution of Orange Sky's services, it was necessary to identify some fundamental non-functional requirements that will shape the overall composition of our application. These requirements are outlined in Table \ref{nonfunctionalreqs}.
@@ -91,7 +97,7 @@ Based on the operational models and geographical distribution of Orange Sky's se
 \begin{table}[h]
     \rowcolors{2}{lightgray!50!white!50!}{white}
     \centering
-    \begin{tabularx}{\textwidth}{ >{\hsize=0.3\hsize}Y | >{\hsize=0.7\hsize}Y }
+    \begin{tabularx}{\textwidth}{ >{\hsize=0.3\hsize}Y | >{\hsize=0.7\hsize}Z }
         \hline
         Requirement                                                       & Reasoning                                                                                                                                                                                                                                                                                                                                 \\ [0.5ex]
         \hline
@@ -105,6 +111,8 @@ Based on the operational models and geographical distribution of Orange Sky's se
     \label{nonfunctionalreqs}
 \end{table}
 
+\clearpage
+
 \subsection{User Stories}
 
 Enhanced understanding of the problem area, and simultaneously the next phase of design, involved empathising with the potential users of this application through the distillation of user stories.
@@ -113,20 +121,20 @@ These user stories follow the generally accepted pattern of \emph{“As \dots, I
 
 \begin{itemize}
     \item \emph{As} a local friend, \emph{I want} to share my stories with others in my local community \emph{so that} shared experiences can be established in my local community of friends.
-    \item \emph{As} local friend, \emph{I want} read and empathise with other stories from my local community \emph{so that} I can better understand my local community's experiences.
-    \item \emph{As} an Orange Sky friend, \emph{I want} share my experiences with Orange Sky HQ \emph{so that} they can be heard and understood by those who make shifts happen.
-    \item \emph{As} an Orange Sky friend, \emph{I want} share my ideas and opinions with Orange Sky HQ \emph{so that} they can be considered in future decision-making.
-    \item \emph{As} a socially disconnected friend, \emph{I want} read stories from all across the country \emph{so that} I can feel connected to those who may be distant, but are still having similar experiences to me.
-    \item \emph{As} a socially isolated friend, \emph{I want} share my stories with other friends \emph{so that} I can feel heard.
-    \item \emph{As} a storytelling friend, \emph{I want} see who reads my stories, and where they are from \emph{so that} I can feel empowered about my ability to share my stories.
-    \item \emph{As} Orange Sky HQ, \emph{I want} read stories shared by friends \emph{so that} I can empathise with their experiences and better deliver our service.
+    \item \emph{As} local friend, \emph{I want} to read and empathise with other stories from my local community \emph{so that} I can better understand my local community's experiences.
+    \item \emph{As} an Orange Sky friend, \emph{I want} to share my experiences with Orange Sky HQ \emph{so that} they can be heard and understood by those who make shifts happen.
+    \item \emph{As} an Orange Sky friend, \emph{I want} to share my ideas and opinions with Orange Sky HQ \emph{so that} they can be considered in future decision-making.
+    \item \emph{As} a socially disconnected friend, \emph{I want} to read stories from all across the country \emph{so that} I can feel connected to those who may be distant, but are still having similar experiences to me.
+    \item \emph{As} a socially isolated friend, \emph{I want} to share my stories with other friends \emph{so that} I can feel heard.
+    \item \emph{As} a storytelling friend, \emph{I want} to see who reads my stories, and where they are from \emph{so that} I can feel empowered about my ability to share my stories.
+    \item \emph{As} Orange Sky HQ, \emph{I want} to read stories shared by friends \emph{so that} I can empathise with their experiences and better deliver our service.
     \item \emph{As} Orange Sky HQ, \emph{I want} to obtain potential storytelling leads \emph{so that} these leads can be further investigated and shared as an Orange Sky case study or story.
     \item \emph{As} a knowledgeable friend, \emph{I want} share important information I have obtained through my experiences \emph{so that} others may also benefit from this knowledge.
 \end{itemize}
 
 \section{Proposed Solution: Story Sharing}
 
-Upon analysis of the requirements outlined above, both non-functional and functional, it was concluded that a story sharing application would enable these requirements to be met in their entirety. We also postulate that a story sharing application would also be generic enough in nature to encourage participation from a larger audience, and would also be open to a large amount of iteration and progression over time, encouraging co-design processes and collaborative feedback loops to be established by Orange Sky. Storytelling is at the core of Orange Sky's communication strategies, and thus we also confirm that this proposed application aligns well with wider organisational imperatives. The following sections outline the process of refinement from our abstract requirements to a concrete design right through to our final prototypes to be taken into the field.
+As previously alluded to, upon the analysis of both the non-functional and functional requirements, we believed that a story sharing application would enable these requirements to be met in their entirety. We also postulate that a story sharing application would also be generic enough in nature to encourage participation from a larger audience, and would also be open to a large amount of iteration and progression over time, encouraging co-design processes and collaborative feedback loops to be established by Orange Sky. Storytelling is at the core of Orange Sky's communication strategies, and thus we also confirm that this proposed application aligns well with wider organisational imperatives. The following sections outline the process of refinement from our abstract requirements to a concrete design right through to our final prototypes to be taken into the field.
 
 \subsection{Use Cases}
 
@@ -180,7 +188,7 @@ After a number of iterations aimed at improving our initial designs, based prima
     \label{finalprototype}
 \end{figure}
 
-Most notably different from our initial designs, beyond the visuals of the application, is the medium that is being utilised for story. Whilst our initial designs outlined a desire to capture stories through text, it was decided that this was potentially not conducive to the type of connection that we were hoping to establish in Orange Sky's service model. By shifting to voice recording as our collection medium, it was postulated that this would lead to the establishment of stronger empathy when listening to another individual's story. We also reason that collecting through voice recording is more in line with the expectations of an Orange Sky service, a service which is renowned and celebrated for its emphasis on conversations with those experiencing homelessness. Our results will look to discuss the accuracy of our assumptions around voice recording as the ideal medium, and recommendations may be made for future development in this space.
+Most notably different from our initial designs, beyond the visuals of the application, is the medium that is being utilised for story. Whilst our initial designs outlined a desire to capture stories through text, it was decided that this was potentially not conducive to the type of connection that we were hoping to establish in Orange Sky's service model. We also note that our initial designs were potentially exclusive to those with literacy challenges. By shifting to voice recording as our collection medium, it was postulated that this would lead to the establishment of stronger empathy when listening to another individual's story. We also reason that collecting through voice recording is more in line with the expectations of an Orange Sky service, a service which is renowned and celebrated for its emphasis on conversations with those experiencing homelessness. Our results will look to discuss the accuracy of our assumptions around voice recording as the ideal medium, and recommendations may be made for future development in this space.
 
 Most major differences in visuals can be simply put down to limitations in technical libraries, frameworks, and even ability. The only notable visual change that was intentionally made from the initial designs, was to incorporate less white, and more of Orange Sky's recognisable colour scheme. This was done to ensure that the application was in alignment with established branding, as well as to ensure that the application would be easily usable in harsh lighting conditions out in the field.
 
@@ -222,8 +230,8 @@ The different variations of this core strategy that were to be tested are listed
     \item \emph{Informally through volunteers}: The application was to be introduced informally through general conversation and mingling by an existing Orange Sky volunteer.
 \end{itemize}
 
-As previously mentioned, each of these strategies are assumed to have differing levels of success, and this will be discussed later in this report. Compounding the variations in strategies being trialled, the application was also to be distributed geographically throughout Australia in an effort to attract as much participation as possible, as well as to investigate the affect of sharing stories with individuals with whom one will likely never cross paths.
+As previously mentioned, each of these strategies are assumed to have differing levels of success, and this will be discussed later in this report. Compounding the variations in strategies being trialled, the application was also to be distributed geographically throughout Australia in an effort to attract as much participation as possible, as well as to investigate the effect of sharing stories with individuals with whom one will likely never cross paths.
 
 \section{Accompanying Work}
 
-Alongside this project, work was also being conducted by two other students also under the supervision of Dr Vyas. Jay Almaraz and Stephen Pozzi were also fortunate enough to conduct field research with Orange Sky, and at times were also assisting in data collection for this study. Almaraz's work was primarily focused on the experiences of those experiencing homelessness with relation to the existing Orange Sky services. And Pozzi's work intended to investigate the impacts and experiences of temporary homelessness, particular as a result of the COVID-19 pandemic.
+Alongside this project, work was also being conducted by two other students also under the supervision of Dr Vyas. Jay Almaraz and Stephen Pozzi were also fortunate enough to conduct field research with Orange Sky, and at times were also assisting in data collection for this study. Almaraz's work was primarily focused on the experiences of those experiencing homelessness with relation to the existing Orange Sky services. Pozzi's work intended to investigate the impacts and experiences of temporary homelessness, particular as a result of the COVID-19 pandemic.
